@@ -19,6 +19,7 @@ function friendly(err) {
   if (m.includes('not confirmed')) return 'Please confirm your email first. Check your inbox.';
   if (m.includes('already registered')) return 'That email already has an account. Try signing in.';
   if (m.includes('rate limit') || m.includes('too many')) return 'Too many attempts. Wait a minute and try again.';
+  if (m.includes('different from the old')) return 'Your new password must be different from the old one.';
   if (m.includes('password')) return 'Choose a stronger password (at least 8 characters).';
   if (m.includes('fetch') || m.includes('network')) return 'Could not reach the server. Check your connection.';
   return 'Something went wrong. Please try again.';
@@ -33,13 +34,17 @@ async function client() {
 export async function initAuth() {
   const sb = await getClient();
   if (!sb) return;
-  const { data } = await sb.auth.getSession();
-  await setUser(data.session?.user ?? null);
+  // Subscribe BEFORE reading the session so the PASSWORD_RECOVERY event is never missed.
   // Don't call Supabase inside this callback (can deadlock); defer instead.
-  sb.auth.onAuthStateChange((_event, session) => {
+  sb.auth.onAuthStateChange((event, session) => {
     const next = session?.user ?? null;
+    if (event === 'PASSWORD_RECOVERY') {
+      setTimeout(() => dispatchEvent(new CustomEvent('chemlab:open-auth', { detail: { mode: 'reset' } })), 0);
+    }
     if ((next?.id ?? null) !== (user?.id ?? null)) setTimeout(() => setUser(next), 0);
   });
+  const { data } = await sb.auth.getSession();
+  await setUser(data.session?.user ?? null);
 }
 
 async function setUser(next) {
@@ -63,6 +68,22 @@ export async function signIn(email, password) {
   try {
     const sb = await client();
     const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  } catch (err) { throw new Error(friendly(err)); }
+}
+
+export async function requestPasswordReset(email) {
+  try {
+    const sb = await client();
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+    if (error) throw error;
+  } catch (err) { throw new Error(friendly(err)); }
+}
+
+export async function updatePassword(password) {
+  try {
+    const sb = await client();
+    const { error } = await sb.auth.updateUser({ password });
     if (error) throw error;
   } catch (err) { throw new Error(friendly(err)); }
 }

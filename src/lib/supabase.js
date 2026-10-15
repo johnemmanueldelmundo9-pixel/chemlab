@@ -13,7 +13,7 @@ export function getClient() {
   if (!isConfigured()) return Promise.resolve(null);
   clientPromise ??= import(LIB)
     .then(({ createClient }) => createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' },
     }))
     .catch(() => null);
   return clientPromise;
