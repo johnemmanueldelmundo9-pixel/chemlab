@@ -17,6 +17,14 @@ export function markDone(moduleId, itemId) {
   set.add(itemId);
   data[moduleId] = [...set];
   write(data);
+  dispatchEvent(new CustomEvent('chemlab:progress', { detail: { moduleId, itemId } }));
+}
+
+// Used by the optional account sync (see lib/auth.js).
+export function getAll() { return read(); }
+export function setAll(data) {
+  write(data);
+  dispatchEvent(new CustomEvent('chemlab:progress-synced'));
 }
 
 export function moduleProgress(m) {

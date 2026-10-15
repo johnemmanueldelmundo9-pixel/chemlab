@@ -1,0 +1,54 @@
+/* ---------- Account area (header) ---------- */
+.acct { display: flex; gap: 8px; align-items: center; position: relative; }
+.acct-btn {
+  width: 40px; height: 40px; border-radius: 999px; border: 0;
+  background: var(--brand); color: var(--brand-ink); font-weight: 750; font-size: 1rem;
+}
+.acct-menu {
+  position: absolute; right: 0; top: calc(100% + 10px); min-width: 220px; padding: 8px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg);
+}
+.acct-menu[hidden] { display: none; }
+.acct-email { padding: 8px 10px; font-size: .85rem; color: var(--ink-3); overflow-wrap: anywhere; border-bottom: 1px solid var(--line); margin-bottom: 6px; }
+.acct-menu button { width: 100%; text-align: left; padding: 9px 10px; border: 0; background: none; border-radius: 8px; color: var(--ink); font-weight: 550; }
+.acct-menu button:hover { background: var(--surface-2); }
+.hide-sm { display: none; }
+.acct-signup { display: none; }
+@media (min-width: 440px) { .acct-signup { display: inline-flex; } }
+@media (min-width: 680px) { .hide-sm { display: inline-flex; } }
+
+/* ---------- Auth dialog ---------- */
+.auth-dialog {
+  padding: 0; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); color: var(--ink);
+  width: min(420px, calc(100vw - 32px)); box-shadow: var(--shadow-lg);
+}
+.auth-dialog::backdrop { background: oklch(0.15 0.03 255 / .55); }
+.auth-card { position: relative; padding: 28px 24px 22px; display: grid; gap: 14px; }
+.auth-card h2 { font-size: 1.4rem; padding-right: 36px; }
+.auth-sub { color: var(--ink-2); font-size: .93rem; }
+.auth-x { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border-radius: 999px; border: 0; background: var(--surface-2); color: var(--ink-2); font-size: 1.2rem; line-height: 1; }
+.auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--surface-2); border-radius: 999px; }
+.auth-tabs button { padding: 9px; border: 0; border-radius: 999px; background: none; color: var(--ink-2); font-weight: 650; }
+.auth-tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.auth-form { display: grid; gap: 12px; }
+.auth-form label { display: grid; gap: 6px; font-weight: 600; font-size: .9rem; }
+.auth-form input {
+  padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line);
+  background: var(--bg); color: var(--ink); font-size: 1rem;
+}
+.auth-msg { min-height: 1.3em; font-size: .88rem; color: var(--ink-2); }
+.auth-msg[data-bad="1"] { color: oklch(0.55 0.2 25); }
+:root[data-theme="dark"] .auth-msg[data-bad="1"] { color: oklch(0.78 0.15 25); }
+.auth-submit:disabled { opacity: .55; cursor: not-allowed; }
+.auth-skip { border: 0; background: none; color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; padding: 4px; justify-self: center; }
+.auth-skip:hover { color: var(--ink); }
+
+/* ---------- Save-progress nudge ---------- */
+.save-prompt {
+  position: fixed; left: 16px; bottom: 82px; z-index: 55; width: min(340px, calc(100vw - 32px));
+  padding: 16px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg); display: grid; gap: 6px;
+}
+.save-prompt p { color: var(--ink-2); font-size: .9rem; }
+.save-actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+@media (min-width: 680px) { .save-prompt { bottom: 18px; } }

@@ -21,5 +21,7 @@ export function startRouter(outlet) {
     }
   }
   addEventListener('hashchange', route);
+  // Re-draw progress bars after account sync or sign out (keep the scroll position).
+  addEventListener('chemlab:progress-synced', () => { const y = scrollY; route(); scrollTo(0, y); });
   route();
 }

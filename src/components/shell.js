@@ -2,6 +2,9 @@
 import { icon } from '../lib/icons.js';
 import { toggleTheme } from '../lib/theme.js';
 import { resetProgress } from '../lib/progress.js';
+import { clearRemoteProgress } from '../lib/auth.js';
+import { mountAccount } from './accountMenu.js';
+import { mountSavePrompt } from './savePrompt.js';
 import { mountChat } from './chat.js';
 
 export function mountShell() {
@@ -27,7 +30,7 @@ export function mountShell() {
           <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode">
             <span class="sun">${icon('sun')}</span><span class="moon">${icon('moon')}</span>
           </button>
-          <a class="btn btn-primary btn-sm" href="#/module/basic-concepts">Start learning</a>
+          <a class="btn btn-primary btn-sm hide-sm" href="#/module/basic-concepts">Start learning</a>
         </div>
       </div>
     </header>
@@ -40,8 +43,14 @@ export function mountShell() {
     </footer>`;
 
   app.querySelector('.theme-toggle').addEventListener('click', toggleTheme);
-  app.querySelector('#reset-progress').addEventListener('click', () => {
-    if (confirm('Clear all saved progress on this device?')) { resetProgress(); location.reload(); }
+  app.querySelector('#reset-progress').addEventListener('click', async () => {
+    if (confirm('Clear all saved progress (on this device and in your account, if you are signed in)?')) {
+      await clearRemoteProgress();
+      resetProgress();
+      location.reload();
+    }
   });
+  mountAccount(app.querySelector('.header-actions'));
+  mountSavePrompt();
   mountChat(app);
 }
