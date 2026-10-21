@@ -7,6 +7,9 @@ export { isConfigured };
 
 let user = null;
 const listeners = new Set();
+let markReady;
+// Resolves once the first session check is finished (or immediately when accounts are off).
+export const authReady = new Promise((r) => { markReady = r; });
 
 export const getUser = () => user;
 export function onAuthChange(fn) { listeners.add(fn); fn(user); return () => listeners.delete(fn); }
@@ -33,7 +36,7 @@ async function client() {
 /* ---------- session ---------- */
 export async function initAuth() {
   const sb = await getClient();
-  if (!sb) return;
+  if (!sb) { markReady(); return; }
   // Subscribe BEFORE reading the session so the PASSWORD_RECOVERY event is never missed.
   // Don't call Supabase inside this callback (can deadlock); defer instead.
   sb.auth.onAuthStateChange((event, session) => {
@@ -45,6 +48,7 @@ export async function initAuth() {
   });
   const { data } = await sb.auth.getSession();
   await setUser(data.session?.user ?? null);
+  markReady();
 }
 
 async function setUser(next) {
@@ -86,6 +90,35 @@ export async function updatePassword(password) {
     const { error } = await sb.auth.updateUser({ password });
     if (error) throw error;
   } catch (err) { throw new Error(friendly(err)); }
+}
+
+// Account deletion: step 1 emails a confirmation link; step 2 (on the confirm page) deletes the account.
+export async function requestDeleteLink() {
+  try {
+    const sb = await client();
+    if (!user?.email) throw new Error('Please sign in first.');
+    const { error } = await sb.auth.signInWithOtp({
+      email: user.email,
+      options: { shouldCreateUser: false, emailRedirectTo: location.origin + location.pathname + '?confirm=delete' },
+    });
+    if (error) throw error;
+  } catch (err) { throw new Error(friendly(err)); }
+}
+
+export async function deleteAccount() {
+  const sb = await client();
+  const { data, error } = await sb.functions.invoke('delete-account');
+  if (error || data?.error) {
+    let msg = 'Could not delete the account. Please try again.';
+    try { const body = await error?.context?.json?.(); if (body?.error) msg = body.error; } catch { /* keep default */ }
+    if (data?.error) msg = data.error;
+    throw new Error(msg);
+  }
+  resetProgress();
+  await sb.auth.signOut({ scope: 'local' });
+  user = null;
+  emit();
+  dispatchEvent(new CustomEvent('chemlab:progress-synced'));
 }
 
 export async function signOut() {

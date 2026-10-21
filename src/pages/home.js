@@ -28,7 +28,7 @@ export function renderHome(el) {
             <a class="btn btn-ghost" href="#/modules">Browse all modules</a>
           </div>
           <div class="hero-pills">
-            <span class="chip">7 modules</span><span class="chip">Simulations</span><span class="chip">Calculators</span><span class="chip">Quizzes</span><span class="chip">AI tutor</span>
+            <a class="chip chip-link" href="#/periodic-table">Periodic table</a><span class="chip">7 modules</span><span class="chip">Simulations</span><span class="chip">Calculators</span><span class="chip">Quizzes</span><span class="chip">AI tutor</span>
           </div>
         </div>
         <div class="atom-stage" aria-hidden="false">
@@ -54,6 +54,19 @@ export function renderHome(el) {
           <span class="chip">${all.done} of ${all.total} activities</span>
         </div>
         <div class="module-grid">${MODULES.map(moduleCard).join('')}</div>
+      </div>
+    </section>
+
+    <section class="section pt-promo-section">
+      <div class="container">
+        <a class="pt-promo" href="#/periodic-table">
+          <span class="pt-promo-icon">${icon('table')}</span>
+          <span class="pt-promo-text">
+            <strong>Interactive periodic table</strong>
+            <span>All 118 elements. Tap one to see its atomic mass, oxidation states, electron configuration, melting point and more.</span>
+          </span>
+          <span class="btn btn-primary btn-sm">Open the table</span>
+        </a>
       </div>
     </section>
 

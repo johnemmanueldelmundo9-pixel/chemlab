@@ -23,6 +23,7 @@ export function mountShell() {
         </a>
         <nav class="nav" aria-label="Main">
           <a href="#/modules">Modules</a>
+          <a href="#/periodic-table">Periodic table</a>
           <a href="#/how-it-works">How it works</a>
           <a href="#/ai-tutor">AI tutor</a>
         </nav>
@@ -37,7 +38,7 @@ export function mountShell() {
     <main id="main" tabindex="-1"></main>
     <footer class="site-footer">
       <div class="container">
-        <span>© ${new Date().getFullYear()} ChemLab · Built for learning chemistry.</span>
+        <span>© ${new Date().getFullYear()} ChemLab · Built for learning chemistry. · <a href="#/periodic-table">Periodic table</a></span>
         <button type="button" id="reset-progress">Reset my progress</button>
       </div>
     </footer>`;

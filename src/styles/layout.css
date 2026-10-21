@@ -15,7 +15,7 @@
 .nav a { padding: 8px 14px; border-radius: 999px; text-decoration: none; color: var(--ink-2); font-weight: 550; font-size: .95rem; }
 .nav a:hover { background: var(--surface-2); color: var(--ink); }
 .header-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
-@media (min-width: 860px) { .nav { display: flex; } .header-actions { margin-left: 8px; } }
+@media (min-width: 1060px) { .nav { display: flex; } .header-actions { margin-left: 8px; } }
 
 /* ---------- Sections ---------- */
 .section { padding-block: clamp(48px, 8vw, 96px); }

@@ -1,6 +1,7 @@
 // Header account area: Sign in / Sign up when logged out, an avatar menu when logged in.
 import { onAuthChange, signOut } from '../lib/auth.js';
 import { openAuth } from './authDialog.js';
+import { openDeleteDialog } from './deleteDialog.js';
 
 export function mountAccount(slot) {
   const root = document.createElement('div');
@@ -18,6 +19,7 @@ export function mountAccount(slot) {
       <div class="acct-menu" role="menu" hidden>
         <div class="acct-email"></div>
         <button type="button" role="menuitem" data-act="signout">Log out</button>
+        <button type="button" role="menuitem" data-act="delete" class="acct-danger">Delete account</button>
       </div>`;
     root.querySelector('.acct-btn').textContent = (user.email || '?')[0].toUpperCase();
     root.querySelector('.acct-email').textContent = user.email || '';
@@ -35,6 +37,7 @@ export function mountAccount(slot) {
     const act = e.target.closest('[data-act]')?.dataset.act;
     if (act === 'signin' || act === 'signup') openAuth(act);
     else if (act === 'signout') { toggleMenu(false); await signOut(); }
+    else if (act === 'delete') { toggleMenu(false); openDeleteDialog(); }
     else if (e.target.closest('.acct-btn')) toggleMenu(root.querySelector('.acct-menu').hidden);
   });
   addEventListener('click', (e) => { if (!root.contains(e.target)) toggleMenu(false); });
