@@ -33,26 +33,29 @@ export function mountChat(app) {
   fab.className = 'chat-fab';
   fab.type = 'button';
   fab.setAttribute('aria-expanded', 'false');
+  fab.setAttribute('aria-controls', 'chembot-panel');
   fab.innerHTML = `${icon('chat')}<span>Ask ChemBot</span>`;
 
   const panel = document.createElement('section');
+  panel.id = 'chembot-panel';
   panel.className = 'chat-panel';
   panel.setAttribute('role', 'dialog');
   panel.setAttribute('aria-label', 'ChemBot AI tutor');
+  panel.setAttribute('aria-hidden', 'true');
   panel.innerHTML = `
     <div class="chat-head">
       <div class="chat-title"><strong>ChemBot</strong><span class="chat-ctx"></span></div>
-      <button type="button" class="chat-new" aria-label="Start a new chat" title="New chat">↺</button>
-      <button type="button" class="chat-close" aria-label="Close">×</button>
+      <button type="button" class="chat-new" aria-label="Start a new chat" title="New chat">${icon('refresh')}</button>
+      <button type="button" class="chat-close" aria-label="Close ChemBot" title="Close">${icon('close')}</button>
     </div>
     <div class="chat-log" role="log" aria-live="polite"></div>
-    <div class="chat-chips"></div>
+    <div class="chat-chips" aria-label="Suggested questions"></div>
     <form class="chat-form">
       <label class="sr-only" for="chat-input">Ask a chemistry question</label>
       <textarea id="chat-input" rows="1" maxlength="${MAX_LEN}" placeholder="Ask a chemistry question…"></textarea>
-      <button type="submit" class="chat-send" aria-label="Send">➤</button>
+      <button type="submit" class="chat-send" aria-label="Send" disabled>${icon('send')}</button>
     </form>
-    <p class="chat-foot">ChemBot only answers chemistry and can make mistakes. Check numbers with the calculators. Messages go to Google's Gemini AI, so don't type personal details.</p>`;
+    <p class="chat-foot">ChemBot can make mistakes—check numbers with the calculators. Messages go to Google Gemini; don’t share personal details.</p>`;
   app.append(panel, fab);
 
   const log = panel.querySelector('.chat-log');
@@ -75,10 +78,21 @@ export function mountChat(app) {
   function renderChips() {
     const show = !history.length && !controller;
     chips.hidden = !show;
-    chips.innerHTML = show ? starterQuestions().map((q) => `<button type="button" class="chip-q">${q}</button>`).join('') : '';
+    chips.replaceChildren();
+    if (!show) return;
+    for (const question of starterQuestions()) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'chip-q';
+      button.textContent = question;
+      button.title = question;
+      chips.append(button);
+    }
   }
   function renderContext() {
-    ctxLabel.textContent = describeContext();
+    const description = describeContext();
+    ctxLabel.textContent = description;
+    ctxLabel.title = description;
     renderChips();
   }
   function renderAll() {
@@ -93,9 +107,10 @@ export function mountChat(app) {
     renderContext();
   }
   function setBusy(state) {
-    send.textContent = state ? '■' : '➤';
+    send.innerHTML = icon(state ? 'stop' : 'send');
     send.setAttribute('aria-label', state ? 'Stop' : 'Send');
     send.classList.toggle('stop', state);
+    send.disabled = state ? false : !input.value.trim();
     log.setAttribute('aria-busy', String(state));
     renderChips();
   }
@@ -171,7 +186,10 @@ export function mountChat(app) {
     input.style.height = 'auto';
     input.style.height = Math.min(input.scrollHeight, 120) + 'px';
   }
-  input.addEventListener('input', autosize);
+  input.addEventListener('input', () => {
+    autosize();
+    if (!controller) send.disabled = !input.value.trim();
+  });
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); }
   });
@@ -184,6 +202,7 @@ export function mountChat(app) {
   log.addEventListener('click', (e) => {
     if (!e.target.closest('.retry')) return;
     e.target.closest('.msg').remove();
+    log.querySelector('.msg.you:last-of-type')?.remove();
     ask(lastQuestion);
   });
   panel.querySelector('.chat-new').addEventListener('click', () => {
@@ -193,12 +212,18 @@ export function mountChat(app) {
 
   const open = (state) => {
     panel.classList.toggle('open', state);
+    panel.setAttribute('aria-hidden', String(!state));
     fab.setAttribute('aria-expanded', String(state));
     if (state) { renderContext(); input.focus(); scroll(); }
   };
+  const close = () => {
+    const restoreFocus = panel.contains(document.activeElement);
+    open(false);
+    if (restoreFocus) fab.focus();
+  };
   fab.addEventListener('click', () => open(!panel.classList.contains('open')));
-  panel.querySelector('.chat-close').addEventListener('click', () => open(false));
-  addEventListener('keydown', (e) => { if (e.key === 'Escape' && panel.classList.contains('open') && !document.querySelector('dialog[open]')) open(false); });
+  panel.querySelector('.chat-close').addEventListener('click', close);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && panel.classList.contains('open') && !document.querySelector('dialog[open]')) close(); });
   addEventListener('chemlab:open-chat', () => open(true));
   addEventListener('chemlab:context', renderContext);
   addEventListener('hashchange', renderContext);

@@ -18,6 +18,10 @@ export const ICONS = {
   moon: wrap('<path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/>'),
   table: wrap('<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M3 15h18M9 4v16M15 4v16"/>'),
   chat: wrap('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/>'),
+  refresh: wrap('<path d="M20 7v5h-5"/><path d="M19 12a7 7 0 1 0-1.7 4.6L20 12"/>'),
+  close: wrap('<path d="M6 6l12 12M18 6L6 18"/>'),
+  send: wrap('<path d="M4 4l16 8-16 8 3-8-3-8z"/><path d="M7 12h13"/>'),
+  stop: wrap('<rect x="7" y="7" width="10" height="10" rx="1.5" fill="currentColor" stroke="none"/>'),
 };
 
 export const icon = (name) => ICONS[name] || '';
