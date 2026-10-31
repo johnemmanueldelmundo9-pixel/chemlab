@@ -1,6 +1,7 @@
 // Interactive periodic table: click (or press Enter on) any element to open its detail card.
 // Deep links: #/periodic-table/26 opens iron. Data lives in src/data/elements.js.
 import { ELEMENTS } from '../data/elements.js';
+import { setTopic } from '../lib/chatContext.js';
 
 const CATS = {
   alkali: ['Alkali metal', 25], alkaline: ['Alkaline earth metal', 70], halogen: ['Halogen', 100],
@@ -157,6 +158,7 @@ function buildDialog() {
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
   dlg.addEventListener('close', () => {
     state.z = null;
+    setTopic('');
     if (/^#\/periodic-table\/\d/.test(location.hash)) history.replaceState(null, '', '#/periodic-table');
   });
   dlg.addEventListener('keydown', (e) => {
@@ -181,6 +183,7 @@ function step(d) {
 }
 function show(z) {
   state.z = z;
+  setTopic(`Looking at the element ${byZ(z).n} (atomic number ${z})`);
   dlg.innerHTML = detail(byZ(z));
   if (!dlg.open) dlg.showModal();
   dlg.querySelector('.el-body').scrollTop = 0;

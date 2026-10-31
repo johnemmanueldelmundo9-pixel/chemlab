@@ -89,8 +89,8 @@ export function renderHome(el) {
           <div>
             <p class="eyebrow">AI tutor</p>
             <h2>Stuck? Ask ChemBot.</h2>
-            <p>Ask about any concept on screen and get a step-by-step explanation. ChemBot runs on Ollama on your own computer, so your questions stay private. The calculators do the final maths, so numbers are always checked.</p>
-            <button class="btn btn-primary" type="button" id="open-chat">Check AI status</button>
+            <p>Ask about any concept and get a step-by-step explanation. ChemBot only answers chemistry, and it tailors its answers to the module you are on. The calculators do the final maths, so numbers are always checked.</p>
+            <button class="btn btn-primary" type="button" id="open-chat">Ask ChemBot</button>
           </div>
           <div class="chat-demo" aria-hidden="true">
             <div class="bubble you">Why does the pressure go up when I shrink the container?</div>
