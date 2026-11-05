@@ -1,13 +1,65 @@
 'use strict';
 // ChemBot server function (Vercel). The browser sends the chat + which page the student is on;
-// this function adds the chemistry-only rules, calls Google Gemini with a key kept in Vercel's
-// environment variables (GEMINI_API_KEY), and streams the answer back as plain text.
+// this function adds the chemistry-only rules, calls an AI provider with a key kept in Vercel's
+// environment variables, and streams the answer back as plain text.
 //
-// Optional environment variables:
-//   GEMINI_MODEL   comma-separated model names to try in order (default below)
-//   RATE_LIMIT     requests allowed per visitor per 10 minutes (default 15)
+// Environment variables (set in Vercel > Settings > Environment Variables, never in GitHub):
+//   DEEPSEEK_API_KEY   key from platform.deepseek.com
+//   GEMINI_API_KEY     key from aistudio.google.com
+//   AI_PROVIDERS       order to try, comma separated (default "deepseek,gemini"); providers without a key are skipped
+//   DEEPSEEK_MODEL     comma-separated model names to try (default "deepseek-v4-flash")
+//   GEMINI_MODEL       comma-separated model names to try (default below)
+//   RATE_LIMIT         requests allowed per visitor per 10 minutes (default 15)
 
-const DEFAULT_MODELS = ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-3.1-flash-lite'];
+const GEMINI_DEFAULT_MODELS = ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-3.1-flash-lite'];
+const list = (name, fallback) => (process.env[name] ? process.env[name].split(',').map((s) => s.trim()).filter(Boolean) : fallback);
+
+// Each provider says how to build its request and how to read a streamed chunk.
+const PROVIDERS = {
+  deepseek: {
+    keyEnv: 'DEEPSEEK_API_KEY',
+    models: () => list('DEEPSEEK_MODEL', ['deepseek-v4-flash']),
+    request(model, key, system, messages) {
+      return {
+        url: 'https://api.deepseek.com/chat/completions',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'system', content: system }, ...messages.map((m) => ({ role: m.role, content: m.content }))],
+          stream: true, temperature: 0.4, max_tokens: 1000,
+        }),
+      };
+    },
+    // OpenAI-style chunks: {"choices":[{"delta":{"content":"..."}}]}. Thinking text (reasoning_content) is ignored.
+    texts(obj) {
+      const d = obj.choices && obj.choices[0] && obj.choices[0].delta;
+      return d && typeof d.content === 'string' && d.content ? [d.content] : [];
+    },
+  },
+  gemini: {
+    keyEnv: 'GEMINI_API_KEY',
+    models: () => list('GEMINI_MODEL', GEMINI_DEFAULT_MODELS),
+    request(model, key, system, messages) {
+      return {
+        url: `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`,
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: system }] },
+          contents: messages.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
+          generationConfig: { temperature: 0.4, maxOutputTokens: 1500 },
+        }),
+      };
+    },
+    texts(obj) {
+      const parts = obj.candidates && obj.candidates[0] && obj.candidates[0].content && obj.candidates[0].content.parts;
+      return (parts || []).filter((p) => typeof p.text === 'string' && p.text && !p.thought).map((p) => p.text);
+    },
+  },
+};
+
+function activeProviders() {
+  return list('AI_PROVIDERS', ['deepseek', 'gemini']).filter((n) => PROVIDERS[n] && process.env[PROVIDERS[n].keyEnv]);
+}
 
 const MODULES = {
   'basic-concepts': ['Module 1', 'Basic Chemical Concepts', 'classification of matter and mixtures, states and properties of matter, physical and chemical changes, SI units and prefixes, significant figures and scientific notation, precision and accuracy, dimensional analysis (factor-label method), Avogadro\'s number, the mole and molar mass'],
@@ -114,10 +166,16 @@ function cleanMessages(raw) {
 }
 
 async function handler(req, res) {
-  if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return send(res, 405, 'method'); }
+  if (req.method === 'GET') { // quick health check: which providers have a key (names only, never the keys)
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'no-store');
+    return res.end(JSON.stringify({ ok: true, providers: activeProviders() }));
+  }
+  if (req.method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return send(res, 405, 'method'); }
   if (!sameOrigin(req)) return send(res, 403, 'origin');
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) return send(res, 503, 'not_configured');
+  const providers = activeProviders();
+  if (!providers.length) return send(res, 503, 'not_configured');
 
   let body;
   try { body = await readBody(req); } catch { return send(res, 400, 'bad_request'); }
@@ -128,55 +186,52 @@ async function handler(req, res) {
 
   if (limited(clientIp(req))) return send(res, 429, 'rate_limited');
 
-  const models = (process.env.GEMINI_MODEL ? process.env.GEMINI_MODEL.split(',') : DEFAULT_MODELS).map((s) => s.trim()).filter(Boolean);
-  const payload = JSON.stringify({
-    systemInstruction: { parts: [{ text: systemPrompt(moduleId, topic) }] },
-    contents: messages.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
-    generationConfig: { temperature: 0.4, maxOutputTokens: 1500 },
-  });
-
+  const system = systemPrompt(moduleId, topic);
   let busy = false;
-  for (const model of models) {
-    let upstream;
-    try {
-      upstream = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-        body: payload,
-      });
-    } catch { continue; }
-    if (upstream.status === 429) { busy = true; continue; }          // this model's free quota is used up: try the next one
-    if (upstream.status === 404 || upstream.status >= 500) continue; // model retired or overloaded: try the next one
-    if (!upstream.ok) { console.error('Gemini error', upstream.status); return send(res, 502, 'upstream'); }
-
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.setHeader('Cache-Control', 'no-store');
-    res.setHeader('X-Accel-Buffering', 'no');
-    let wrote = false;
-    let buf = '';
-    const handleLine = (line) => {
-      if (!line.startsWith('data:')) return;
-      let obj;
-      try { obj = JSON.parse(line.slice(5).trim()); } catch { return; }
-      const parts = obj.candidates && obj.candidates[0] && obj.candidates[0].content && obj.candidates[0].content.parts;
-      if (!parts) return;
-      for (const p of parts) if (typeof p.text === 'string' && p.text && !p.thought) { res.write(p.text); wrote = true; }
-    };
-    try {
-      const decoder = new TextDecoder();
-      for await (const chunk of upstream.body) {
-        buf += decoder.decode(chunk, { stream: true });
-        let i;
-        while ((i = buf.indexOf('\n')) >= 0) { handleLine(buf.slice(0, i).trim()); buf = buf.slice(i + 1); }
+  for (const name of providers) {
+    const provider = PROVIDERS[name];
+    const key = process.env[provider.keyEnv];
+    for (const model of provider.models()) {
+      const r = provider.request(model, key, system, messages);
+      let upstream;
+      try { upstream = await fetch(r.url, { method: 'POST', headers: r.headers, body: r.body }); } catch (e) { console.error(name, model, 'network error'); continue; }
+      if (!upstream.ok) {
+        let detail = '';
+        try { detail = (await upstream.text()).replace(/\s+/g, ' ').slice(0, 300); } catch { /* ignore */ }
+        console.error(`${name} ${model} -> ${upstream.status} ${detail}`);
+        if (upstream.status === 429 || upstream.status === 402) busy = true; // out of quota or balance
+        continue; // try the next model, then the next provider
       }
-      handleLine(buf.trim());
-    } catch (e) { console.error('stream error', e && e.message); }
-    if (!wrote) res.write("I couldn't put together an answer for that one. Try asking your chemistry question in a different way.");
-    return res.end();
+
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('X-Accel-Buffering', 'no');
+      let wrote = false;
+      let buf = '';
+      const handleLine = (line) => {
+        if (!line.startsWith('data:')) return;
+        const data = line.slice(5).trim();
+        if (!data || data === '[DONE]') return;
+        let obj;
+        try { obj = JSON.parse(data); } catch { return; }
+        for (const t of provider.texts(obj)) { res.write(t); wrote = true; }
+      };
+      try {
+        const decoder = new TextDecoder();
+        for await (const chunk of upstream.body) {
+          buf += decoder.decode(chunk, { stream: true });
+          let i;
+          while ((i = buf.indexOf('\n')) >= 0) { handleLine(buf.slice(0, i).trim()); buf = buf.slice(i + 1); }
+        }
+        handleLine(buf.trim());
+      } catch (e) { console.error('stream error', e && e.message); }
+      if (!wrote) res.write("I couldn't put together an answer for that one. Try asking your chemistry question in a different way.");
+      return res.end();
+    }
   }
   return send(res, busy ? 429 : 502, busy ? 'busy' : 'upstream');
 }
 
 module.exports = handler;
-module.exports._test = { systemPrompt, cleanMessages, hits };
+module.exports._test = { systemPrompt, cleanMessages, hits, activeProviders };

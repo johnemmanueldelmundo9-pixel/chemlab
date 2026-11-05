@@ -55,7 +55,7 @@ export function mountChat(app) {
       <textarea id="chat-input" rows="1" maxlength="${MAX_LEN}" placeholder="Ask a chemistry question…"></textarea>
       <button type="submit" class="chat-send" aria-label="Send" disabled>${icon('send')}</button>
     </form>
-    <p class="chat-foot">ChemBot can make mistakes—check numbers with the calculators. Messages go to Google Gemini; don’t share personal details.</p>`;
+    <p class="chat-foot">ChemBot can make mistakes—check numbers with the calculators. Messages are sent to an AI service (DeepSeek or Google Gemini); don’t share personal details.</p>`;
   app.append(panel, fab);
 
   const log = panel.querySelector('.chat-log');
