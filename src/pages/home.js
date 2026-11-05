@@ -102,6 +102,5 @@ export function renderHome(el) {
     </section>`;
 
   el.querySelector('#open-chat').addEventListener('click', () => dispatchEvent(new Event('chemlab:open-chat')));
-  // Pause SMIL electron motion for people who prefer reduced motion.
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) el.querySelector('.atom-stage svg')?.pauseAnimations();
+  // The hero atom is meant to always move, so its SMIL animation is never paused here.
 }

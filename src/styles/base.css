@@ -31,6 +31,10 @@ svg { display: block; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  /* Everything calms down for people who prefer reduced motion, EXCEPT the hero atom (.atom-stage),
+     which the site owner wants to keep moving: slow orbits and gently floating formulas. */
+  *:not(.atom-stage, .atom-stage *),
+  *:not(.atom-stage, .atom-stage *)::before,
+  *:not(.atom-stage, .atom-stage *)::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   html { scroll-behavior: auto; }
 }
