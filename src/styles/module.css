@@ -1,0 +1,91 @@
+/* ---------- Module page ----------
+   Same colour logic as .module-card: --h (set inline from modules.js) drives --mod / --mod-soft,
+   with a brighter variant in dark mode. Everything else uses tokens.css variables. */
+.mod-page {
+  --mod: oklch(0.58 0.15 var(--h));
+  --mod-soft: oklch(0.95 0.035 var(--h));
+}
+:root[data-theme="dark"] .mod-page { --mod: oklch(0.76 0.13 var(--h)); --mod-soft: oklch(0.31 0.06 var(--h)); }
+.mod-page .eyebrow { color: var(--mod); }
+
+/* Hero */
+.mod-hero {
+  background:
+    radial-gradient(60% 90% at 90% 0%, color-mix(in oklab, var(--mod) 16%, transparent), transparent 70%),
+    var(--bg);
+  border-bottom: 1px solid var(--line);
+  padding-block: clamp(28px, 5vw, 56px);
+}
+.mod-hero .back { display: inline-block; margin-bottom: 18px; color: var(--ink-3); text-decoration: none; font-weight: 550; font-size: .92rem; }
+.mod-hero .back:hover { color: var(--ink); }
+.mod-hero-grid { display: grid; gap: 28px; align-items: center; }
+@media (min-width: 860px) { .mod-hero-grid { grid-template-columns: 1.4fr .8fr; gap: 48px; } }
+.mod-hero h1 { font-size: clamp(2rem, 5.5vw, 3.2rem); font-weight: 800; letter-spacing: -0.03em; }
+.mod-lead { margin-top: 14px; max-width: 38em; color: var(--ink-2); font-size: clamp(1.02rem, 2vw, 1.15rem); }
+.mod-topics { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+.mod-cta { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 12px; }
+.mod-page .btn-primary { background: var(--mod); color: var(--brand-ink); }
+:root[data-theme="dark"] .mod-page .btn-primary { color: oklch(0.2 0.03 255); }
+
+.mod-summary {
+  display: grid; gap: 12px; justify-items: start; padding: 22px; border-radius: var(--radius);
+  background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); position: relative;
+}
+.mod-summary::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; border-radius: var(--radius) var(--radius) 0 0; background: var(--mod); }
+.mod-summary-icon { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--mod-soft); color: var(--mod); }
+.mod-summary-icon svg { width: 26px; height: 26px; }
+.mod-summary strong { font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.mod-summary .progress { width: 100%; height: 8px; }
+.mod-summary .progress > i { background: var(--mod); }
+.mod-summary-meta { color: var(--ink-3); font-size: .88rem; }
+
+/* "Being built" notice (replaces the old .coming box) */
+.mod-coming {
+  display: flex; gap: 14px; align-items: flex-start; margin-bottom: clamp(24px, 4vw, 36px);
+  padding: 18px 20px; border-radius: var(--radius); border: 1px dashed var(--line); background: var(--surface); color: var(--ink-2);
+}
+.mod-coming svg { flex: none; width: 28px; height: 28px; color: var(--mod); }
+
+/* The four parts */
+.mod-parts { padding-block: clamp(36px, 6vw, 72px); }
+.mod-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.mod-card {
+  position: relative; display: flex; flex-direction: column; gap: 16px; padding: 22px;
+  border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow);
+}
+.mod-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; border-radius: var(--radius) var(--radius) 0 0; background: var(--mod); }
+.mod-card header { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: start; }
+.mod-card-icon { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--mod-soft); color: var(--mod); }
+.mod-card-icon svg { width: 24px; height: 24px; }
+.mod-card h3 { font-size: 1.15rem; }
+.mod-card header p { margin-top: 4px; color: var(--ink-2); font-size: .92rem; }
+.mod-card-count { font-variant-numeric: tabular-nums; }
+
+.mod-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.mod-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink); text-decoration: none; font-weight: 550;
+  transition: border-color .15s, background .15s;
+}
+a.mod-item:hover { border-color: var(--mod); background: var(--mod-soft); }
+.mod-item.is-soon { color: var(--ink-3); font-weight: 450; }
+.mi-name { flex: 1; min-width: 0; }
+.mi-state {
+  flex: none; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%;
+  border: 2px solid var(--line); color: var(--brand-ink);
+}
+.mi-state[data-done="1"] { background: var(--mod); border-color: var(--mod); }
+:root[data-theme="dark"] .mi-state[data-done="1"] { color: oklch(0.2 0.03 255); }
+.mi-state svg { width: 16px; height: 16px; }
+
+/* Previous / next module */
+.mod-pager { display: grid; gap: 12px; padding-block: 0 clamp(48px, 7vw, 88px); }
+@media (min-width: 640px) { .mod-pager { grid-template-columns: 1fr 1fr; } }
+.mod-pager-link {
+  display: grid; gap: 2px; padding: 16px 20px; border-radius: var(--radius); border: 1px solid var(--line);
+  background: var(--surface); text-decoration: none; transition: border-color .15s, box-shadow .15s;
+}
+.mod-pager-link:hover { border-color: var(--brand); box-shadow: var(--shadow); }
+.mod-pager-link small { color: var(--ink-3); font-size: .8rem; }
+.mod-pager-link span { font-weight: 650; }
+.mod-pager-link.is-next { text-align: right; }
