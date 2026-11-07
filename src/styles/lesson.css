@@ -69,4 +69,47 @@ button.mod-item { width: 100%; text-align: left; font: inherit; cursor: pointer;
 .wd-scroll { overflow-x: auto; }
 .wd-tbl input { padding: 8px 10px; }
 .wd-x { width: 32px; height: 32px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); font-size: 1.1rem; line-height: 1; }
-.wd canvas { width: 100%; max-width: 420px; height: auto; aspect-ratio: 320 / 220; border-radius: var(--radius-sm); background: var(--bg); }
+.wd canvas { display: block; width: 100%; max-width: 420px; height: auto; border-radius: var(--radius-sm); background: var(--bg); } /* keeps the width/height attributes' ratio */
+.wd canvas.sq { max-width: 300px; }
+
+/* ---------- Worked examples, quiz review, quick reference ---------- */
+.ex { margin-top: 22px; padding: 18px; border-radius: var(--radius); border: 1px dashed var(--mod); background: var(--surface); }
+.ex-t { margin: 0 !important; color: var(--ink) !important; }
+.ex-steps { margin: 12px 0 0; padding-left: 1.3em; display: grid; gap: 8px; }
+.ex-steps li { color: var(--ink); }
+.ex .btn { margin-top: 14px; }
+.ex-steps:empty + .btn { display: none; }
+
+.rev { margin-top: 14px; padding: 14px 16px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface); }
+.rev p { margin: 6px 0 0; }
+.rev .rev-q { margin: 0; font-weight: 650; color: var(--ink); }
+.rev-bad { color: oklch(0.55 0.2 25); font-weight: 650; }
+.rev-ok { color: oklch(0.45 0.15 150); font-weight: 650; }
+:root[data-theme="dark"] .rev-bad { color: oklch(0.78 0.15 25); }
+:root[data-theme="dark"] .rev-ok { color: oklch(0.82 0.14 150); }
+.rd-prog { margin-top: 8px; height: 8px; }
+.rd-prog > i { background: var(--mod); }
+.mod-done { margin: 0; color: var(--mod); font-weight: 700; }
+
+.wd-h { margin: 0; font-size: 1rem; color: var(--ink); }
+.wd-sec + .wd-sec { border-top: 1px solid var(--line); }
+.wd-sec .wd-body { padding-top: 20px; }
+.wd-sec:first-child .wd-body { padding-top: 24px; }
+
+.ref { margin-top: clamp(24px, 4vw, 40px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.ref summary { cursor: pointer; padding: 16px 20px; font-weight: 650; color: var(--ink); }
+.ref[open] summary { border-bottom: 1px solid var(--line); }
+.ref-grid { display: grid; gap: 22px; padding: 18px 20px 22px; }
+@media (min-width: 820px) { .ref-grid { grid-template-columns: 1.1fr 1fr; align-items: start; } }
+.ref dl { margin: 0; display: grid; gap: 10px; }
+.ref dt { font-weight: 650; color: var(--ink); }
+.ref dd { margin: 2px 0 0; color: var(--ink-2); font-size: .92rem; }
+.ref .tbl { margin-top: 0; }
+
+/* Make long formulas and tables behave on narrow screens */
+.rd table { min-width: 0; }
+.rd h1, .rd h2 { overflow-wrap: anywhere; }
+@media (max-width: 520px) { .wd-body { padding: 18px 14px 16px; } .chk { padding: 14px; } }
+
+/* Author styles such as .btn { display: inline-flex } would otherwise defeat the hidden attribute */
+.mod-page [hidden] { display: none !important; }
