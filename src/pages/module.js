@@ -114,7 +114,7 @@ export function renderModule(el, id) {
         <details class="ref"><summary>Quick reference: key terms and formulas</summary>
           <div class="ref-grid">
             <dl>${ref.terms.map(([t, d]) => `<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl>
-            <div class="tbl"><table><thead><tr><th scope="col">Formula</th><th scope="col">Rule</th></tr></thead><tbody>${ref.formulas.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</tbody></table></div>
+            <div class="tbl"><table><thead><tr><th scope="col">${ref.head?.[0] || 'Formula'}</th><th scope="col">${ref.head?.[1] || 'Rule'}</th></tr></thead><tbody>${ref.formulas.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</tbody></table></div>
           </div>
         </details>` : ''}
       </div></section>
