@@ -1,5 +1,6 @@
 // Interactive widgets used inside lessons and as the module's calculators/simulations.
 // mountWidget(name, hostElement) fills the host and wires its events. All maths lives in ./chemistry/*.js.
+import { LAB_WIDGETS } from './labWidgets.js';
 import { ELEMENTS } from '../data/elements.js';
 import { parseSig, roundSig, mulDiv, addSub } from './chemistry/sigfigs.js';
 import { toScientific, fromScientific } from './chemistry/notation.js';
@@ -330,5 +331,5 @@ function quantum(h) {
   sel.addEventListener('input', run); run();
 }
 
-const WIDGETS = { classify, sigfigs, rounder, sigops, sigtools, scinot, convert, measure, mole, darts, states, isotope, quantum };
+const WIDGETS = { LAB_WIDGETS, classify, sigfigs, rounder, sigops, sigtools, scinot, convert, measure, mole, darts, states, isotope, quantum };
 export function mountWidget(name, host) { WIDGETS[name]?.(host); }
