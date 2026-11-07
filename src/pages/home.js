@@ -22,7 +22,7 @@ export function renderHome(el) {
         <div>
           <p class="eyebrow">Interactive chemistry</p>
           <h1>Chemistry you can <em>see, tweak</em> and actually understand.</h1>
-          <p class="hero-lead">Seven modules from atomic structure to electrochemistry, each with lessons, live simulations, calculators and quizzes. Free, with an optional AI tutor that answers your questions.</p>
+          <p class="hero-lead">Eight modules from lab safety to electrochemistry, each with lessons, live simulations, calculators and quizzes. Free, with an optional AI tutor that answers your questions.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#/module/${next.id}">${started ? 'Continue learning' : 'Start with Module 1'}</a>
             <a class="btn btn-ghost" href="#/modules">Browse all modules</a>
