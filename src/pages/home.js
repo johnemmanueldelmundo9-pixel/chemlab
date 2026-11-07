@@ -28,7 +28,7 @@ export function renderHome(el) {
             <a class="btn btn-ghost" href="#/modules">Browse all modules</a>
           </div>
           <div class="hero-pills">
-            <a class="chip chip-link" href="#/periodic-table">Periodic table</a><span class="chip">7 modules</span><span class="chip">Simulations</span><span class="chip">Calculators</span><span class="chip">Quizzes</span><span class="chip">AI tutor</span>
+            <a class="chip chip-link" href="#/periodic-table">Periodic table</a><span class="chip">${MODULES.length} modules</span><span class="chip">Simulations</span><span class="chip">Calculators</span><span class="chip">Quizzes</span><span class="chip">AI tutor</span>
           </div>
         </div>
         <div class="atom-stage" aria-hidden="false">
