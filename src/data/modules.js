@@ -1,11 +1,25 @@
-// Single source of truth for the seven modules.
+// Single source of truth for the eight modules.
 // `outline` names the lessons / simulations / calculators; `plan` counts must match it (they drive progress %).
 // `status` flips from "soon" to "ready" when a module is finished. Lesson text lives in data/content.js.
 // A module only opens its items when status is 'ready', so drafts in content.js stay hidden until then.
+// Module ids never change (progress is saved by id), so renumbering `num` does not lose anyone's progress.
 
 export const MODULES = [
   {
-    id: 'basic-concepts', num: 1, hue: 215, status: 'ready',
+    id: 'intro-lab-safety', num: 1, hue: 95, status: 'ready',
+    title: 'Introduction to Chemistry & Lab Safety',
+    blurb: 'Why engineers need chemistry, and how to work safely in the laboratory.',
+    topics: ['Why chemistry', 'Lab conduct', 'PPE & hazards', 'Waste & first aid'],
+    outline: {
+      lessons: ['Why chemistry matters for engineers', 'Lab conduct, housekeeping and hygiene', 'Glassware, equipment and tools', 'Handling, storing and labelling chemicals', 'Personal protective equipment (PPE)', 'Waste disposal, first aid and spills'],
+      sims: ['Dress for the lab', 'Hazard pictograms', 'Glassware match-up', 'Waste sorter'],
+      calcs: [],
+    },
+    plan: { lessons: 6, sims: 4, calcs: 0 },
+    icon: 'flame',
+  },
+  {
+    id: 'basic-concepts', num: 2, hue: 215, status: 'ready',
     title: 'Basic Chemical Concepts',
     blurb: 'Matter, measurement and the mole: the language and arithmetic of chemistry.',
     topics: ['Matter & mixtures', 'Significant figures', 'Unit conversion', 'The mole'],
@@ -18,7 +32,7 @@ export const MODULES = [
     icon: 'flask',
   },
   {
-    id: 'atomic-periodicity', num: 2, hue: 275, status: 'soon',
+    id: 'atomic-periodicity', num: 3, hue: 275, status: 'soon',
     title: 'Atomic Structure & Periodicity',
     blurb: 'Inside the atom, and why the periodic table works.',
     topics: ['Electron configuration', 'Isotopes', 'Periodic trends'],
@@ -31,7 +45,7 @@ export const MODULES = [
     icon: 'atom',
   },
   {
-    id: 'bonding-molecular', num: 3, hue: 340, status: 'soon',
+    id: 'bonding-molecular', num: 4, hue: 340, status: 'soon',
     title: 'Bonding & Molecular Structure',
     blurb: 'How atoms join, and why molecules take their shapes.',
     topics: ['Ionic & covalent', 'Lewis structures', 'VSEPR shapes'],
@@ -39,7 +53,7 @@ export const MODULES = [
     icon: 'molecule',
   },
   {
-    id: 'stoichiometry-reactions', num: 4, hue: 30, status: 'soon',
+    id: 'stoichiometry-reactions', num: 5, hue: 30, status: 'soon',
     title: 'Stoichiometry & Chemical Reactions',
     blurb: 'Count atoms by weighing them, and predict reaction yields.',
     topics: ['The mole', 'Balancing equations', 'Limiting reagent'],
@@ -47,7 +61,7 @@ export const MODULES = [
     icon: 'balance',
   },
   {
-    id: 'states-gas-laws', num: 5, hue: 170, status: 'soon',
+    id: 'states-gas-laws', num: 6, hue: 170, status: 'soon',
     title: 'States of Matter & Gas Laws',
     blurb: 'From solids to gases, and the laws that govern pressure, volume and temperature.',
     topics: ['Boyle & Charles', 'Combined gas law', 'Ideal gas law'],
@@ -55,7 +69,7 @@ export const MODULES = [
     icon: 'gas',
   },
   {
-    id: 'thermo-equilibrium', num: 6, hue: 55, status: 'soon',
+    id: 'thermo-equilibrium', num: 7, hue: 55, status: 'soon',
     title: 'Thermochemistry & Equilibrium',
     blurb: 'Energy changes in reactions and how systems settle at balance.',
     topics: ['Enthalpy & Hess', 'Calorimetry', "Le Chatelier"],
@@ -63,7 +77,7 @@ export const MODULES = [
     icon: 'flame',
   },
   {
-    id: 'electrochemistry', num: 7, hue: 135, status: 'soon',
+    id: 'electrochemistry', num: 8, hue: 135, status: 'soon',
     title: 'Electrochemistry',
     blurb: 'Redox reactions, batteries and the electricity of chemistry.',
     topics: ['Redox', 'Galvanic cells', 'Nernst equation'],
