@@ -113,3 +113,16 @@ button.mod-item { width: 100%; text-align: left; font: inherit; cursor: pointer;
 
 /* Author styles such as .btn { display: inline-flex } would otherwise defeat the hidden attribute */
 .mod-page [hidden] { display: none !important; }
+
+/* ---------- Lab safety widgets (Module 1) ---------- */
+.wd-fs { margin: 0; padding: 0; border: 0; display: grid; gap: 8px; min-width: 0; }
+.wd-fs .wd-h { padding: 0; margin-bottom: 4px; line-height: 1.4; }
+.wd-check { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--bg); color: var(--ink); cursor: pointer; }
+.wd-check input { flex: none; width: 18px; height: 18px; margin-top: 3px; accent-color: var(--mod); }
+.wd-ghs { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+.wd-tile { display: grid; gap: 6px; justify-items: center; padding: 10px 6px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font-size: .78rem; font-weight: 600; line-height: 1.25; text-align: center; transition: border-color .15s, background .15s; }
+.wd-tile:hover { border-color: var(--mod); }
+.wd-tile[aria-pressed="true"] { border-color: var(--mod); background: var(--mod-soft); }
+.wd-tile svg { width: 64px; height: 64px; }
+.wd-fb ul { margin: 6px 0 0; padding-left: 1.2em; }
+.wd-fb p { margin-top: 6px; }
