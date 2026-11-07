@@ -3,10 +3,11 @@
 //              ['check', {q, options, answer, why}]   ['w', widgetName]   (see lib/widgets.js)
 //              ['ex', title, problem, [step html, ...]]   a worked example revealed one step at a time
 // Items not listed here show as "Soon" on the module page. A module only opens when its status is 'ready'.
-
+import { LAB_SAFETY } from './labSafety.js';
 const chk = (q, options, answer, why) => ['check', { q, options, answer, why }];
 
 export const CONTENT = {
+  'intro-lab-safety': LAB_SAFETY,
   'basic-concepts': {
     lessons: [
       { title: 'Classifying matter', blocks: [
