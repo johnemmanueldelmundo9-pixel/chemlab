@@ -16,7 +16,7 @@ export function moduleCard(m) {
       </div>
       <div class="mc-topics">${m.topics.map((t) => `<span class="chip">${t}</span>`).join('')}</div>
       <div class="mc-foot">
-        <div class="mc-features"><span>Lessons</span><span>Simulations</span><span>Calculators</span><span>Quiz</span></div>
+        <div class="mc-features"><span>Lessons</span>${m.plan.sims ? '<span>Simulations</span>' : ''}${m.plan.calcs ? '<span>Calculators</span>' : ''}<span>Quiz</span></div>
         <div class="progress" role="progressbar" aria-label="${m.title} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p.pct}"><i style="width:${p.pct}%"></i></div>
         <div class="mc-meta">
           <span>${p.pct}% complete</span>
