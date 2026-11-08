@@ -5,6 +5,7 @@
 //              ['img', src, alt, caption]   an image figure (see pages/module.js)
 // Items not listed here show as "Soon" on the module page. A module only opens when its status is 'ready'.
 import { LAB_SAFETY } from './labSafety.js';
+import { ATOMIC } from './atomic.js';
 const chk = (q, options, answer, why) => ['check', { q, options, answer, why }];
 
 export const CONTENT = {
@@ -283,3 +284,5 @@ export const CONTENT = {
     ],
   },
 };
+
+CONTENT['atomic-periodicity'] = ATOMIC;
