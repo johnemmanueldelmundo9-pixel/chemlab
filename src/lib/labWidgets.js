@@ -168,9 +168,9 @@ function ghs(h) {
 
 /* ---------- registered widgets ---------- */
 const GLASS_IMGS = [
-  ['https://commons.wikimedia.org/wiki/Special:FilePath/Laboratory_Glasswares.jpg?width=700', 'Common glassware set'],
-  ['https://commons.wikimedia.org/wiki/Special:FilePath/Erlenmeyer_flask.svg?width=400', 'Erlenmeyer flask'],
-  ['https://commons.wikimedia.org/wiki/Special:FilePath/Mechero_Bunsen.jpg?width=400', 'Bunsen burner'],
+  ['src/assets/lab/glassware.jpg', 'Common glassware set'],
+  ['src/assets/lab/erlenmeyer.png', 'Erlenmeyer flask'],
+  ['src/assets/lab/bunsen.jpg', 'Bunsen burner'],
 ];
 function glassware(h) {
   h.innerHTML = `<div class="wd-body"><p class="wd-hint">Picture each tool first, then answer. A new set of 8 every round.</p>

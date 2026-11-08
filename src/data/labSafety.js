@@ -2,15 +2,24 @@
 // Images are Wikimedia Commons (freely licensed). Block types documented at the top of content.js.
 // Lesson titles and counts match modules.js outline/plan so progress ids (lesson-1..lesson-6) are unchanged.
 const chk = (q, options, answer, why) => ['check', { q, options, answer, why }];
-const W = 'https://commons.wikimedia.org/wiki/Special:FilePath/';
-const img = (file, w, alt, cap) => ['img', `${W}${file}?width=${w}`, alt, cap];
+// Images are bundled in src/assets/lab/ (downloaded from Wikimedia Commons, credits in that folder).
+const IMG = {
+  glass: 'src/assets/lab/glassware.jpg',
+  erlenmeyer: 'src/assets/lab/erlenmeyer.png',
+  bunsen: 'src/assets/lab/bunsen.jpg',
+  hood: 'src/assets/lab/fume-hood.jpg',
+  goggles: 'src/assets/lab/goggles.jpg',
+  eyewash: 'src/assets/lab/eyewash.jpg',
+  shower: 'src/assets/lab/shower.jpg',
+};
+const img = (src, alt, cap) => ['img', src, alt, cap];
 
 export const LAB_SAFETY = {
   lessons: [
     { title: 'Why chemistry matters for engineers', blocks: [
       ['p', '<strong>Chemistry</strong> is a living science: ancient in its roots, modern in its reach. It describes the natural world and the world we build.'],
       ['p', 'Engineering is built on <strong>materials, energy and processes</strong>, and all three are governed by chemical principles. You do not need to be a chemical engineer for it to matter: chemistry explains <em>why</em> a metal rusts, why a battery fades, why concrete cracks and why a weld fails.'],
-      img('Laboratory_Glasswares.jpg', 800, 'Common laboratory glassware on a bench', 'A typical bench set: beakers, conical flasks and measuring cylinders. Wikimedia Commons, CC BY-SA 4.0.'),
+      img(IMG.glass, 'Common laboratory glassware on a bench', 'A typical bench set: beakers, conical flasks and measuring cylinders. Wikimedia Commons, CC BY-SA 4.0.'),
       ['table', ['Area', 'How chemistry helps'], [
         ['Materials selection', 'Metals, polymers, ceramics, concrete and fuels differ in composition, structure and behaviour, which decides what can be used where.'],
         ['Corrosion and material degradation', 'Rusting steel, corroding pipes and weakening structures are chemical processes, so they can be prevented or slowed down.'],
@@ -65,12 +74,12 @@ export const LAB_SAFETY = {
         'Avoid touching your face, eyes and mouth after handling chemicals.',
         'Take off protective equipment before you leave the lab.',
       ]],
-      img('Emergency_eyewash_station.jpg', 800, 'An eyewash station in a laboratory', 'Rinse chemical splashes at the eyewash for at least 15 minutes. Wikimedia Commons.'),
+      img(IMG.eyewash, 'An emergency eyewash and shower unit in a laboratory', 'Rinse chemical splashes at the eyewash for at least 15 minutes. Wikimedia Commons.'),
       chk('What does \u201cSeiketsu\u201d (Sanitize) ask of you?', ['Throw away all old equipment', 'Keep cleanliness at a high standard at all times', 'Label every bottle', 'Work faster'], 1, 'It means keeping a high standard of cleanliness all the time, not only at the end of the session.'),
     ] },
     { title: 'Glassware, equipment and tools', blocks: [
       ['p', 'Knowing what each tool is for is the first safety skill. The groups below are the pieces you will meet most often — picture each one, then try the game.'],
-      img('Laboratory_Glasswares.jpg', 800, 'Common laboratory glassware', 'Beakers, conical flasks and measuring cylinders — the everyday set. Wikimedia Commons, CC BY-SA 4.0.'),
+      img(IMG.glass, 'Common laboratory glassware', 'Beakers, conical flasks and measuring cylinders — the everyday set. Wikimedia Commons, CC BY-SA 4.0.'),
       ['table', ['Group', 'Examples and what they do'], [
         ['Used in every chemistry course', 'Graduated cylinder (measures volume), beaker (holds and mixes), Erlenmeyer (conical) flask (swirl and heat), side-arm flask (filtration under vacuum), funnel, test tubes, watch glass (covers or evaporates small samples), wash bottle (rinsing).'],
         ['Hand tools', 'Crucible tongs and test tube holder (hold hot items), forceps and tweezers, spatula and scoopula (transfer solids), glass stirring rod, Pasteur pipette with dropper bulb, striker (lights burners).'],
@@ -92,7 +101,7 @@ export const LAB_SAFETY = {
         'Make sure no flammable solvents are nearby before lighting a flame, and never leave a lit Bunsen burner unattended.',
         'Never handle broken glass with bare hands, and never use chipped, cracked or dirty glassware.',
       ]],
-      img('Mechero_Bunsen.jpg', 500, 'A Bunsen burner', 'A Bunsen burner heats with a controllable gas flame. Wikimedia Commons.'),
+      img(IMG.bunsen, 'A Bunsen burner', 'A Bunsen burner heats with a controllable gas flame. Wikimedia Commons.'),
       chk('You notice a crack in a beaker. What do you do?', ['Use it for cold liquids only', 'Do not use it, and tell the instructor', 'Tape it', 'Use it quickly'], 1, 'Never use chipped or cracked glassware, and report damage.'),
     ] },
     { title: 'Handling, storing and labelling chemicals', blocks: [
@@ -108,7 +117,7 @@ export const LAB_SAFETY = {
         'Do not use metal tools with peroxides.',
         'Know the storage, handling and disposal requirements for each chemical before you use it.',
       ]],
-      img('Fume_hood.jpg', 800, 'A fume hood in use', 'Volatile chemicals belong in the fume hood, at least 15 cm inside. Wikimedia Commons.'),
+      img(IMG.hood, 'A fume hood in a laboratory', 'Volatile chemicals belong in the fume hood, at least 15 cm inside. Wikimedia Commons.'),
       ['h', 'Labelling'],
       ['note', 'Any chemical you move out of its original container needs a label with the <strong>contents, concentration, hazard, date and the name (or initials) of the user</strong>.'],
       ['h', 'Hazard pictograms'],
@@ -152,7 +161,7 @@ export const LAB_SAFETY = {
     ] },
     { title: 'Personal protective equipment (PPE)', blocks: [
       ['p', 'PPE is your <strong>last line of defence</strong>. It does not replace careful work, but it stands between you and a splash, a spill or a flame. Wear the required PPE whenever you perform or observe an experiment.'],
-      img('Safety_goggles.jpg', 500, 'Safety goggles to protect the eyes', 'Eye protection comes first: goggles, not just glasses, when splashes are possible. Wikimedia Commons.'),
+      img(IMG.goggles, 'Safety goggles', 'Eye protection comes first: goggles, not just glasses, when splashes are possible. Wikimedia Commons.'),
       ['table', ['Item', 'What to wear', 'Notes'], [
         ['Laboratory gown', 'Full-length, long-sleeved lab coat, or a chemical-resistant apron', 'Protects skin and clothes'],
         ['Closed shoes', 'Cover the whole foot; low heels with non-slip soles are best', 'No sandals, open-toed, open-backed or high-heeled shoes'],
@@ -201,7 +210,7 @@ export const LAB_SAFETY = {
         ['Chemical on skin', 'Remove affected clothing and rinse with large amounts of water for at least 15 minutes (sink, shower or hose).'],
         ['Chemical in the eyes', 'Rinse eyes, eyelids and face with lukewarm water at the eyewash station for at least 15 minutes.'],
       ]],
-      img('Emergency_shower.jpg', 500, 'An emergency safety shower', 'Use the safety shower for a chemical splash over a large area of skin. Wikimedia Commons.'),
+      img(IMG.shower, 'A safety shower and eyewash station', 'Use the safety shower for a chemical splash over a large area of skin. Wikimedia Commons.'),
       ['h', 'Spills'],
       ['list', [
         'Contain the spill, clear students from the area, clean it up immediately, dispose of the clean-up waste properly, and mop the floor dry.',
