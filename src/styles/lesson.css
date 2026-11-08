@@ -126,3 +126,21 @@ button.mod-item { width: 100%; text-align: left; font: inherit; cursor: pointer;
 .wd-tile svg { width: 64px; height: 64px; }
 .wd-fb ul { margin: 6px 0 0; padding-left: 1.2em; }
 .wd-fb p { margin-top: 6px; }
+
+/* ---------- Lesson figures + Module 1 polish ---------- */
+.rd-fig { margin: 18px 0 4px; padding: 10px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); }
+.rd-fig img { display: block; width: 100%; max-height: 420px; object-fit: contain; border-radius: var(--radius-sm); background: var(--bg); }
+.rd-fig figcaption { margin-top: 8px; font-size: .82rem; line-height: 1.45; color: var(--ink-3); }
+.rd-fig figcaption a { color: var(--ink-2); }
+.rd h2 { display: flex; align-items: center; gap: 10px; }
+.rd h2::before { content: ""; flex: none; width: 8px; height: 1.1em; margin-left: -16px; border-radius: 4px; background: var(--mod); }
+.rd ol { margin: 12px 0 0; padding-left: 1.4em; display: grid; gap: 6px; color: var(--ink-2); max-width: 68ch; }
+.rd li::marker { color: var(--mod); font-weight: 700; }
+.rd .tbl { border-radius: 10px; }
+.wd-body { border-radius: 0 0 var(--radius) var(--radius); }
+.wd-tile svg { filter: drop-shadow(0 1px 0 rgb(0 0 0 / .06)); }
+.wd-glass { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.wd-glass figure { margin: 0; padding: 8px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--bg); }
+.wd-glass img { display: block; width: 100%; height: 140px; object-fit: contain; border-radius: 6px; }
+.wd-glass figcaption { margin-top: 6px; font-size: .78rem; color: var(--ink-3); text-align: center; line-height: 1.3; }
+.rd-fig figcaption { margin-top: 8px; font-size: .8rem; color: var(--ink-3); }

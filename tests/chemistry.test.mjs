@@ -5,6 +5,7 @@ import { toScientific, fromScientific } from '../src/lib/chemistry/notation.js';
 import { factor, convert } from '../src/lib/chemistry/units.js';
 import { parseFormula, molarMass } from '../src/lib/chemistry/molarMass.js';
 import { density, percentError, temperature } from '../src/lib/chemistry/measure.js';
+import { moleConvert, AVOGADRO } from '../src/lib/chemistry/mole.js';
 
 const near = (a, b, t = 1e-9) => assert.ok(Math.abs(a - b) <= t * Math.max(1, Math.abs(b)), `${a} != ${b}`);
 
@@ -49,4 +50,13 @@ assert.ok(molarMass({ Xx: 1 }, (e) => M[e]).error);
 // measurement helpers
 near(density(27.0, 10.0), 2.7); near(percentError(9.5, 10), 5); near(temperature(25, 'C', 'K'), 298.15);
 near(temperature(100, 'C', 'F'), 212); near(temperature(-40, 'F', 'C'), -40);
+
+// mole conversions: grams, moles and particles
+near(moleConvert(25.0, 'g', 74.092).mol, 0.33742, 1e-4);
+near(moleConvert(2.00, 'mol', 18.015).mass, 36.03, 1e-4);
+near(moleConvert(2.00, 'mol', 18.015).particles / AVOGADRO, 2, 1e-12);
+near(moleConvert(AVOGADRO, 'p', 18.015).mol, 1);
+assert.equal(moleConvert(-1, 'g', 18), null);
+assert.equal(moleConvert(1, 'x', 18), null);
+assert.equal(moleConvert(1, 'g', 0), null);
 console.log('all chemistry tests passed');

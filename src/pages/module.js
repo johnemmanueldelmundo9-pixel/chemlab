@@ -48,6 +48,7 @@ function block([t, a, b, c]) {
     case 'table': return `<div class="tbl"><table><thead><tr>${a.map((h) => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${b.map((r) => `<tr>${r.map((x) => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     case 'check': return check(a);
     case 'w': return `<div class="wd" data-w="${a}"></div>`;
+    case 'img': return `<figure class="rd-fig"><img src="${a}" alt="${b || ''}" loading="lazy" onerror="this.closest('.rd-fig').outerHTML='';"><figcaption>${c || ''}</figcaption></figure>`;
     case 'ex': return `<div class="ex"><p class="ex-t"><strong>Worked example: ${a}.</strong> ${b}</p>
       <ol class="ex-steps" aria-live="polite">${c.map((s) => `<li hidden>${s}</li>`).join('')}</ol>
       <button type="button" class="btn btn-ghost btn-sm" data-step>Show first step</button></div>`;

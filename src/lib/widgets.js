@@ -1,29 +1,13 @@
 // Interactive widgets used inside lessons and as the module's calculators/simulations.
 // mountWidget(name, hostElement) fills the host and wires its events. All maths lives in ./chemistry/*.js.
+// Calculator UI lives in ./calcWidgets.js (CALC_WIDGETS) so the calcu and module sides can work apart.
 import { LAB_WIDGETS } from './labWidgets.js';
-import { ELEMENTS } from '../data/elements.js';
-import { parseSig, roundSig, mulDiv, addSub } from './chemistry/sigfigs.js';
-import { toScientific, fromScientific } from './chemistry/notation.js';
-import { UNITS, factor } from './chemistry/units.js';
-import { parseFormula, molarMass } from './chemistry/molarMass.js';
-import { density, percentError, temperature } from './chemistry/measure.js';
+import { CALC_WIDGETS } from './calcWidgets.js';
 
-const NA = 6.022e23;
 const $ = (r, s) => r.querySelector(s);
 const shuffle = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
-
-/* ---------- formatting ---------- */
-// 5780 -> "5.78 x 10^3" when toPrecision switches to exponent form.
-export function sci(x, n = 4) {
-  if (!isFinite(x)) return '\u2014';
-  return expHtml(x.toPrecision(n));
-}
-const expHtml = (s) => { if (!s.includes('e')) return s; const [a, b] = s.split('e'); return `${a} \u00d7 10<sup>${+b}</sup>`; };
-const trimNum = (x, d = 6) => String(Number(x.toPrecision(d)));
-const kHtml = (k) => { const x = String(Number(k.toPrecision(6))); if (!x.includes('e')) return x; const [a, b] = x.split('e'); return (a === '1' ? '10' : `${a} \u00d7 10`) + `<sup>${+b}</sup>`; };
 const field = (label, inner) => `<label class="wd-field">${label}${inner}</label>`;
 const num = (v, attr = '') => `<input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="${v}" ${attr}>`;
-const sigHtml = (p) => [...p.mant].map((c, i) => (p.flags[i] ? `<mark>${c}</mark>` : c)).join('') + (p.exp !== null ? ` \u00d7 10<sup>${p.exp}</sup>` : '');
 
 /* ---------- classify matter ---------- */
 const ITEMS = [
@@ -67,160 +51,6 @@ function classify(h) {
     $(h, '.wd-fb').innerHTML = `<strong>${ok ? 'Correct.' : 'Not quite.'}</strong> ${why} <button type="button" class="btn btn-primary btn-sm" data-n>${i === order.length - 1 ? 'See score' : 'Next'}</button>`;
   };
   draw();
-}
-
-/* ---------- significant figures: counter, rounder, operations ---------- */
-function sigfigs(h) {
-  h.innerHTML = `<div class="wd-body"><h3 class="wd-h">Count significant figures</h3>${field('Number', num('0.00250'))}
-    <p class="wd-out" role="status" aria-live="polite"></p>
-    <p class="wd-hint">Try 100, 100., 1.00e2, 1.008 or 0.0025. Highlighted digits are significant.</p></div>`;
-  const inp = $(h, 'input'), out = $(h, '.wd-out');
-  const run = () => {
-    const p = parseSig(inp.value);
-    out.innerHTML = p ? `<span class="wd-num">${sigHtml(p)}</span><strong>${p.n} significant figure${p.n === 1 ? '' : 's'}</strong>` : 'Enter a non-zero number.';
-  };
-  inp.addEventListener('input', run); run();
-}
-
-function rounder(h) {
-  h.innerHTML = `<div class="wd-body"><h3 class="wd-h">Round to significant figures</h3><div class="wd-row">${field('Number', num('6.3849', 'data-x'))}
-    ${field('Significant figures', `<select data-n>${[1, 2, 3, 4, 5, 6].map((n) => `<option ${n === 2 ? 'selected' : ''}>${n}</option>`).join('')}</select>`)}</div>
-    <p class="wd-out" role="status" aria-live="polite"></p><p class="wd-hint"></p></div>`;
-  const x = $(h, '[data-x]'), n = $(h, '[data-n]');
-  const run = () => {
-    const v = parseFloat(x.value);
-    if (isNaN(v) || v === 0) { $(h, '.wd-out').textContent = 'Enter a non-zero number.'; $(h, '.wd-hint').textContent = ''; return; }
-    const r = roundSig(v, +n.value);
-    $(h, '.wd-out').innerHTML = `${x.value.trim()} \u2192 <strong class="wd-num">${expHtml(r.text)}</strong>`;
-    const all = String(Math.abs(v)).replace(/^0\.0*|\./g, ''), d = all[+n.value];
-    $(h, '.wd-hint').textContent = d ? `The first digit dropped is ${d}: ${+d >= 5 ? 'round the last kept digit up.' : 'leave the last kept digit as it is.'}` : 'Nothing to drop: the number already has this few digits.';
-  };
-  [x, n].forEach((el) => el.addEventListener('input', run)); run();
-}
-
-function sigops(h) {
-  h.innerHTML = `<div class="wd-body"><h3 class="wd-h">Calculate with the right precision</h3><div class="wd-row">${field('First number', num('4.56', 'data-a'))}
-    ${field('Operation', '<select data-o><option value="*">\u00d7 multiply</option><option value="/">\u00f7 divide</option><option value="+">+ add</option><option value="-">\u2212 subtract</option></select>')}
-    ${field('Second number', num('1.4', 'data-b'))}</div>
-    <p class="wd-out" role="status" aria-live="polite"></p><p class="wd-hint"></p></div>`;
-  const a = $(h, '[data-a]'), b = $(h, '[data-b]'), o = $(h, '[data-o]');
-  const run = () => {
-    const mul = o.value === '*' || o.value === '/', r = mul ? mulDiv(a.value, b.value, o.value) : addSub(a.value, b.value, o.value);
-    if (!r) { $(h, '.wd-out').textContent = 'Enter two non-zero numbers.'; $(h, '.wd-hint').textContent = ''; return; }
-    $(h, '.wd-out').innerHTML = `Calculator shows ${trimNum(r.raw, 10)} \u2192 report <strong class="wd-num">${expHtml(mul ? r.text : r.text)}</strong>`;
-    $(h, '.wd-hint').textContent = mul ? `Multiply and divide: keep the fewest significant figures. Here that is ${r.n}.` : `Add and subtract: keep the fewest decimal places. Here that is ${r.places}.`;
-  };
-  [a, b, o].forEach((el) => el.addEventListener('input', run)); run();
-}
-
-function sigtools(h) {
-  h.innerHTML = '<div class="wd-sec"></div><div class="wd-sec"></div><div class="wd-sec"></div>';
-  const [a, b, c] = h.querySelectorAll('.wd-sec');
-  sigfigs(a); rounder(b); sigops(c);
-}
-
-/* ---------- scientific notation ---------- */
-function scinot(h) {
-  h.innerHTML = `<div class="wd-body"><h3 class="wd-h">Decimal to scientific notation</h3>${field('Number', num('0.00567', 'data-d'))}
-    <p class="wd-out" data-o1 role="status" aria-live="polite"></p><p class="wd-hint" data-h1></p>
-    <h3 class="wd-h">Scientific notation to decimal</h3>
-    <div class="wd-row">${field('N (between 1 and 10)', num('4.56', 'data-m'))}${field('Exponent n', num('5', 'data-e'))}</div>
-    <p class="wd-out" data-o2 role="status" aria-live="polite"></p></div>`;
-  const d = $(h, '[data-d]'), m = $(h, '[data-m]'), e = $(h, '[data-e]');
-  const r1 = () => {
-    const s = toScientific(d.value);
-    if (!s) { $(h, '[data-o1]').textContent = 'Enter a non-zero number.'; $(h, '[data-h1]').textContent = ''; return; }
-    $(h, '[data-o1]').innerHTML = `<span class="wd-num">${s.mantissa} \u00d7 10<sup>${s.exp}</sup></span><strong>${s.n} significant figure${s.n === 1 ? '' : 's'}</strong>`;
-    $(h, '[data-h1]').textContent = s.exp < 0 ? `The decimal point moved ${-s.exp} place${s.exp === -1 ? '' : 's'} to the right, so the exponent is negative.` : s.exp > 0 ? `The decimal point moved ${s.exp} place${s.exp === 1 ? '' : 's'} to the left, so the exponent is positive.` : 'No movement needed: the exponent is 0.';
-  };
-  const r2 = () => {
-    const mv = parseFloat(m.value), s = /^\d+\.?\d*$/.test(m.value.trim()) && mv >= 1 && mv < 10 ? fromScientific(m.value, parseInt(e.value, 10)) : null;
-    $(h, '[data-o2]').innerHTML = s ? `<span class="wd-num">${m.value.trim()} \u00d7 10<sup>${parseInt(e.value, 10)}</sup> = ${s}</span>` : 'N must be at least 1 and less than 10, and n a whole number.';
-  };
-  d.addEventListener('input', r1); [m, e].forEach((x) => x.addEventListener('input', r2)); r1(); r2();
-}
-
-/* ---------- unit converter (factor-label) ---------- */
-function convert(h) {
-  const cats = Object.keys(UNITS);
-  h.innerHTML = `<div class="wd-body"><div class="wd-row">
-    ${field('Quantity', `<select data-c>${cats.map((c) => `<option>${c}</option>`).join('')}</select>`)}${field('Value', num('8.50', 'data-v'))}
-    ${field('From', '<select data-f></select>')}${field('To', '<select data-t></select>')}</div>
-    <p class="wd-out" role="status" aria-live="polite"></p><p class="wd-hint"></p></div>`;
-  const c = $(h, '[data-c]'), v = $(h, '[data-v]'), f = $(h, '[data-f]'), t = $(h, '[data-t]');
-  const fill = () => {
-    const u = Object.keys(UNITS[c.value]), opt = u.map((x) => `<option>${x}</option>`).join('');
-    f.innerHTML = opt; t.innerHTML = opt;
-    const pick = { Length: ['in', 'cm'], Mass: ['lb', 'kg'], Volume: ['m\u00b3', 'mL'], Time: ['h', 's'], Speed: ['km/h', 'm/s'], Density: ['g/cm\u00b3', 'kg/m\u00b3'] }[c.value] || [u[0], u[1]];
-    f.value = pick[0]; t.value = pick[1];
-  };
-  const run = () => {
-    const s = parseSig(v.value), x = parseFloat(v.value), k = factor(c.value, f.value, t.value);
-    if (!s || isNaN(x) || k === null) { $(h, '.wd-out').textContent = 'Enter a non-zero number.'; $(h, '.wd-hint').textContent = ''; return; }
-    const r = roundSig(x * k, s.n), pre = c.value.startsWith('SI') ? '' : ' ';
-    $(h, '.wd-out').innerHTML = `${v.value.trim()}${pre}${f.value} \u00d7 <span class="wd-frac"><span>${kHtml(k)}${pre}${t.value}</span><span>1${pre}${f.value}</span></span> = <strong class="wd-num">${expHtml(r.text)}${pre}${t.value}</strong>`;
-    $(h, '.wd-hint').textContent = `${f.value} cancels, leaving ${t.value}. Rounded to ${s.n} significant figure${s.n === 1 ? '' : 's'}, like your value. The conversion factor itself is treated as exact.`;
-  };
-  c.addEventListener('change', () => { fill(); run(); });
-  [v, f, t].forEach((el) => el.addEventListener('input', run));
-  fill(); run();
-}
-
-/* ---------- density, temperature, percent error ---------- */
-function measure(h) {
-  h.innerHTML = `<div class="wd-body">${field('Calculate', '<select data-k><option value="d">Density (mass \u00f7 volume)</option><option value="t">Temperature scales</option><option value="p">Percent error</option></select>')}
-    <div class="wd-row" data-f></div><p class="wd-out" role="status" aria-live="polite"></p><p class="wd-hint"></p></div>`;
-  const k = $(h, '[data-k]'), box = $(h, '[data-f]');
-  const forms = {
-    d: () => field('Mass (g)', num('27.0', 'data-1')) + field('Volume (cm\u00b3)', num('10.0', 'data-2')),
-    t: () => field('Temperature', num('25', 'data-1')) + field('Scale', '<select data-2><option>C</option><option>K</option><option>F</option></select>'),
-    p: () => field('Measured value', num('9.5', 'data-1')) + field('Accepted value', num('10.0', 'data-2')),
-  };
-  const run = () => {
-    const a = $(h, '[data-1]'), b = $(h, '[data-2]'), x = parseFloat(a.value), o = $(h, '.wd-out'), hint = $(h, '.wd-hint');
-    if (isNaN(x)) { o.textContent = 'Enter a number.'; hint.textContent = ''; return; }
-    if (k.value === 'd') {
-      const y = parseFloat(b.value), r = density(x, y);
-      o.innerHTML = r === null ? 'Volume must be above zero.' : `Density = ${a.value.trim()} g \u00f7 ${b.value.trim()} cm\u00b3 = <strong class="wd-num">${sci(r, Math.min(parseSig(a.value)?.n || 3, parseSig(b.value)?.n || 3))} g/cm\u00b3</strong>`;
-      hint.textContent = 'Density is an intensive property: it does not depend on how much of the substance you have.';
-    } else if (k.value === 't') {
-      const sc = b.value, K = temperature(x, sc, 'K'), C = temperature(x, sc, 'C'), F = temperature(x, sc, 'F');
-      if (K < 0) { o.textContent = 'That is below absolute zero (0 K), which is impossible.'; hint.textContent = ''; return; }
-      o.innerHTML = `<strong class="wd-num">${C.toFixed(2)} \u00b0C</strong><strong class="wd-num">${K.toFixed(2)} K</strong><strong class="wd-num">${F.toFixed(2)} \u00b0F</strong>`;
-      hint.textContent = 'K = \u00b0C + 273.15 and \u00b0F = 1.8 \u00d7 \u00b0C + 32. The kelvin is the SI unit for temperature.';
-    } else {
-      const y = parseFloat(b.value), r = percentError(x, y);
-      o.innerHTML = r === null ? 'The accepted value cannot be zero.' : `Percent error = <strong class="wd-num">${r.toFixed(2)}%</strong>`;
-      hint.textContent = '|measured \u2212 accepted| \u00f7 accepted \u00d7 100. It tells you how accurate a measurement is.';
-    }
-  };
-  const draw = () => { box.innerHTML = forms[k.value](); box.querySelectorAll('input,select').forEach((el) => el.addEventListener('input', run)); run(); };
-  k.addEventListener('change', draw); draw();
-}
-
-/* ---------- molar mass and mole calculator ---------- */
-const BY_SYMBOL = new Map(ELEMENTS.map((e) => [e.s, e]));
-function mole(h) {
-  h.innerHTML = `<div class="wd-body"><div class="wd-row">${field('Formula (e.g. H2O, Ca(OH)2, C60)', num('Ca(OH)2', 'data-s'))}
-    ${field('Amount', num('25.0', 'data-a'))}${field('Unit', '<select data-u><option value="g">grams</option><option value="mol">moles</option><option value="p">particles</option></select>')}</div>
-    <div class="wd-scroll"><table class="wd-tbl" data-t></table></div>
-    <dl class="wd-grid" role="status" aria-live="polite"></dl><p class="wd-hint"></p></div>`;
-  const s = $(h, '[data-s]'), a = $(h, '[data-a]'), u = $(h, '[data-u]');
-  const run = () => {
-    const counts = parseFormula(s.value), grid = $(h, '.wd-grid'), tbl = $(h, '[data-t]'), hint = $(h, '.wd-hint');
-    tbl.innerHTML = ''; hint.textContent = '';
-    if (!counts) { grid.innerHTML = '<p>Enter a formula with capital letters for each element, like NaCl or Al2(SO4)3.</p>'; return; }
-    const mm = molarMass(counts, (el) => BY_SYMBOL.get(el)?.m);
-    if (mm.error) { grid.innerHTML = `<p>${mm.error}</p>`; return; }
-    tbl.innerHTML = `<thead><tr><th>Element</th><th>Atoms</th><th>Atomic mass (g/mol)</th><th>Subtotal</th></tr></thead><tbody>${mm.rows.map((r) => `<tr><td>${r.el}</td><td>${r.n}</td><td>${r.mass}</td><td>${r.sub.toFixed(3)}</td></tr>`).join('')}</tbody>`;
-    const x = parseFloat(a.value);
-    if (isNaN(x) || x < 0) { grid.innerHTML = `<div><dt>Molar mass</dt><dd>${mm.total.toFixed(3)} g/mol</dd></div>`; return; }
-    const mol = u.value === 'g' ? x / mm.total : u.value === 'mol' ? x : x / NA;
-    grid.innerHTML = `<div><dt>Molar mass</dt><dd>${mm.total.toFixed(3)} g/mol</dd></div><div><dt>Mass</dt><dd>${sci(mol * mm.total, 4)} g</dd></div>
-      <div><dt>Moles</dt><dd>${sci(mol, 4)} mol</dd></div><div><dt>Particles</dt><dd>${sci(mol * NA, 4)}</dd></div>`;
-    hint.textContent = 'grams \u00f7 molar mass = moles; moles \u00d7 6.022 \u00d7 10\u00b2\u00b3 = particles. Atoms of one element inside the formula = particles \u00d7 the number shown in the Atoms column.';
-  };
-  [s, a, u].forEach((el) => el.addEventListener('input', run)); run();
 }
 
 /* ---------- accuracy vs precision darts ---------- */
@@ -290,7 +120,7 @@ function states(h) {
   label(); draw(); if (!reduce) loop();
 }
 
-/* ---------- Module 2 (kept for later) ---------- */
+/* ---------- Module 3: isotopes ---------- */
 function isotope(h) {
   let rows = [[75.78, 34.969], [24.22, 36.966]];
   const draw = () => {
@@ -331,5 +161,5 @@ function quantum(h) {
   sel.addEventListener('input', run); run();
 }
 
-const WIDGETS = { LAB_WIDGETS, classify, sigfigs, rounder, sigops, sigtools, scinot, convert, measure, mole, darts, states, isotope, quantum };
+const WIDGETS = { ...LAB_WIDGETS, ...CALC_WIDGETS, classify, darts, states, isotope, quantum };
 export function mountWidget(name, host) { WIDGETS[name]?.(host); }

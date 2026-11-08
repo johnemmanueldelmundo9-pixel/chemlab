@@ -167,8 +167,19 @@ function ghs(h) {
 }
 
 /* ---------- registered widgets ---------- */
+const GLASS_IMGS = [
+  ['https://commons.wikimedia.org/wiki/Special:FilePath/Laboratory_Glasswares.jpg?width=700', 'Common glassware set'],
+  ['https://commons.wikimedia.org/wiki/Special:FilePath/Erlenmeyer_flask.svg?width=400', 'Erlenmeyer flask'],
+  ['https://commons.wikimedia.org/wiki/Special:FilePath/Mechero_Bunsen.jpg?width=400', 'Bunsen burner'],
+];
+function glassware(h) {
+  h.innerHTML = `<div class="wd-body"><p class="wd-hint">Picture each tool first, then answer. A new set of 8 every round.</p>
+    <div class="wd-glass">${GLASS_IMGS.map(([s, a]) => `<figure><img src="${s}" alt="${a}" loading="lazy" onerror="this.parentNode.style.display='none'"><figcaption>${a}</figcaption></figure>`).join('')}</div>
+    <div data-g></div></div>`;
+  game(h.querySelector('[data-g]'), GLASS, { n: 8, label: 'Which tool' });
+}
 export const LAB_WIDGETS = {
-  glassware: (h) => game(h, GLASS, { n: 8, label: 'Which tool' }),
+  glassware,
   waste: (h) => game(h, WASTE, { n: 8, fixed: ['Salts', 'Acids', 'Bases', 'Organic', 'Inorganic'], label: 'Waste item' }),
   storage: (h) => game(h, CABINET, { n: 6, fixed: ['Acid cabinet', 'Flammable liquid cabinet', 'Locked poison cabinet', 'Ventilated cabinet', 'Water-tight, cool and dry cabinet'], label: 'Chemical' }),
   firstaid: (h) => game(h, AID, { n: 6, label: 'Situation' }),
