@@ -2,7 +2,6 @@
 // mountWidget(name, hostElement) fills the host and wires its events. All maths lives in ./chemistry/*.js.
 // Calculator UI lives in ./calcWidgets.js (CALC_WIDGETS) so the calcu and module sides can work apart.
 import { LAB_WIDGETS } from './labWidgets.js';
-import { ATOM_WIDGETS } from './atomWidgets.js';
 import { CALC_WIDGETS } from './calcWidgets.js';
 
 const $ = (r, s) => r.querySelector(s);
@@ -162,5 +161,5 @@ function quantum(h) {
   sel.addEventListener('input', run); run();
 }
 
-const WIDGETS = { ...LAB_WIDGETS, ...ATOM_WIDGETS, ...CALC_WIDGETS, classify, darts, states, isotope, quantum };
+const WIDGETS = { ...LAB_WIDGETS, ...CALC_WIDGETS, classify, darts, states, isotope, quantum };
 export function mountWidget(name, host) { WIDGETS[name]?.(host); }

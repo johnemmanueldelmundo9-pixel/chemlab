@@ -3,8 +3,10 @@ import { renderHome } from './pages/home.js';
 import { renderModule, renderNotFound } from './pages/module.js';
 import { renderConfirmDelete } from './pages/confirmDelete.js';
 import { renderPeriodic } from './pages/periodic.js';
+import { renderLegal } from './pages/legal.js';
 
 const HOME_SECTIONS = ['modules', 'how-it-works', 'ai-tutor'];
+const LEGAL_PAGES = ['privacy', 'terms', 'cookies', 'accessibility', 'credits', 'contact'];
 
 export function startRouter(outlet) {
   function route() {
@@ -17,6 +19,9 @@ export function startRouter(outlet) {
       else scrollTo(0, 0);
     } else if (head === 'periodic-table') {
       if (renderPeriodic(outlet, arg)) scrollTo(0, 0); // true only when the page was freshly built
+    } else if (LEGAL_PAGES.includes(head)) {
+      renderLegal(outlet, head);
+      scrollTo(0, 0);
     } else if (head === 'confirm-delete') {
       renderConfirmDelete(outlet);
       scrollTo(0, 0);

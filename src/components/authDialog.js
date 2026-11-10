@@ -2,13 +2,14 @@
 // Accounts are optional: "Continue without an account" is always there.
 import { signIn, signUp, requestPasswordReset, updatePassword, isConfigured } from '../lib/auth.js';
 import { checkPassword } from '../lib/password.js';
+import { SITE } from '../data/site.js';
 
 const EYE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 const EYE_OFF = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
 
 const COPY = {
-  signin: ['Save your progress', 'An account is optional. ChemLab works fully without one. Sign in only if you want your progress kept across devices.', 'Sign in'],
-  signup: ['Save your progress', 'An account is optional. ChemLab works fully without one. Create one only if you want your progress kept across devices.', 'Create account'],
+  signin: ['Save your progress', 'Optional. Sign in only if you want your progress kept across devices.', 'Sign in'],
+  signup: ['Save your progress', 'Optional. Create an account only if you want your progress kept across devices.', 'Create account'],
   forgot: ['Reset your password', 'Enter your email and we will send you a link to choose a new password.', 'Send reset link'],
   reset:  ['Choose a new password', 'Pick a new password for your account.', 'Update password'],
 };
@@ -51,6 +52,10 @@ function build() {
           <label for="auth-pw2">Confirm password</label>
           <input id="auth-pw2" type="password" name="confirm" autocomplete="new-password">
         </div>
+        <div class="consent" data-modes="signup">
+          <label><input type="checkbox" name="age"> <span>I am ${SITE.minAge} or older, or I have permission from a parent or guardian.</span></label>
+          <label><input type="checkbox" name="terms"> <span>I agree to the <a href="#/terms" target="_blank" rel="noopener">Terms of Service</a> and <a href="#/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>
+        </div>
         <button type="button" class="auth-link" data-go="forgot" data-modes="signin">Forgot password?</button>
         <p class="auth-msg" role="status" aria-live="polite"></p>
         <button class="btn btn-primary auth-submit" type="submit"></button>
@@ -73,7 +78,9 @@ function build() {
     const rules = checkPassword(pw);
     const emailOk = /^\S+@\S+\.\S+$/.test(email);
     const match = pw.length > 0 && pw === form.confirm.value;
-    const ok = { signin: emailOk && pw.length > 0, signup: emailOk && rules.ok && match, forgot: emailOk, reset: rules.ok && match }[mode];
+    const ageOk = form.age.checked;
+    const termsOk = form.terms.checked;
+    const ok = { signin: emailOk && pw.length > 0, signup: emailOk && rules.ok && match && ageOk && termsOk, forgot: emailOk, reset: rules.ok && match }[mode];
     return { email, pw, rules, match, ok };
   }
 
@@ -99,6 +106,7 @@ function build() {
     dlg.querySelector('.pw-label').textContent = mode === 'reset' ? 'New password' : 'Password';
     form.password.autocomplete = mode === 'signin' ? 'current-password' : 'new-password';
     form.password.value = ''; form.confirm.value = '';
+    form.age.checked = false; form.terms.checked = false;
     say('', 'hint'); validate();
   }
   dlg.setMode = setMode;

@@ -20,7 +20,8 @@
 /* ---------- Auth dialog ---------- */
 .auth-dialog {
   padding: 0; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); color: var(--ink);
-  width: min(420px, calc(100vw - 32px)); box-shadow: var(--shadow-lg);
+  width: min(420px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow-y: auto;
+  box-shadow: var(--shadow-lg);
 }
 .auth-dialog::backdrop { background: oklch(0.15 0.03 255 / .55); }
 .auth-card { position: relative; padding: 28px 24px 22px; display: grid; gap: 14px; }
@@ -36,6 +37,10 @@
   padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line);
   background: var(--bg); color: var(--ink); font-size: 1rem;
 }
+.consent { display: grid; gap: 8px; }
+.consent label { display: flex; gap: 9px; align-items: flex-start; font-weight: 450; font-size: .86rem; line-height: 1.45; color: var(--ink-2); }
+.consent input[type="checkbox"] { width: 16px; height: 16px; padding: 0; margin: 2px 0 0; flex: none; accent-color: var(--brand); }
+.consent a { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
 .auth-msg { min-height: 1.3em; font-size: .88rem; color: var(--ink-2); }
 .auth-msg[data-bad="1"] { color: oklch(0.55 0.2 25); }
 :root[data-theme="dark"] .auth-msg[data-bad="1"] { color: oklch(0.78 0.15 25); }

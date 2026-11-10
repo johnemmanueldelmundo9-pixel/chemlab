@@ -6,6 +6,7 @@ import { clearRemoteProgress } from '../lib/auth.js';
 import { mountAccount } from './accountMenu.js';
 import { mountSavePrompt } from './savePrompt.js';
 import { mountChat } from './chat.js';
+import { mountStorageNotice } from './storageNotice.js';
 
 export function mountShell() {
   const app = document.getElementById('app');
@@ -38,7 +39,15 @@ export function mountShell() {
     <main id="main" tabindex="-1"></main>
     <footer class="site-footer">
       <div class="container">
-        <span>© ${new Date().getFullYear()} ChemLab · Built for learning chemistry. · <a href="#/periodic-table">Periodic table</a></span>
+        <span>© ${new Date().getFullYear()} ChemLab · A free student project for learning chemistry.</span>
+        <nav class="footer-links" aria-label="Legal and site information">
+          <a href="#/privacy">Privacy</a>
+          <a href="#/terms">Terms</a>
+          <a href="#/cookies">Cookies</a>
+          <a href="#/accessibility">Accessibility</a>
+          <a href="#/credits">Credits</a>
+          <a href="#/contact">Contact</a>
+        </nav>
         <button type="button" id="reset-progress">Reset my progress</button>
       </div>
     </footer>`;
@@ -54,4 +63,5 @@ export function mountShell() {
   mountAccount(app.querySelector('.header-actions'));
   mountSavePrompt();
   mountChat(app);
+  mountStorageNotice();
 }

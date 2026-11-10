@@ -32,7 +32,7 @@ export const MODULES = [
     icon: 'flask',
   },
   {
-    id: 'atomic-periodicity', num: 3, hue: 275, status: 'ready',
+    id: 'atomic-periodicity', num: 3, hue: 275, status: 'soon',
     title: 'Atomic Structure & Periodicity',
     blurb: 'Inside the atom, and why the periodic table works.',
     topics: ['Electron configuration', 'Isotopes', 'Periodic trends'],

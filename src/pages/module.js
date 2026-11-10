@@ -7,7 +7,6 @@ import { icon } from '../lib/icons.js';
 import { getAll, markDone, moduleProgress } from '../lib/progress.js';
 import { mountWidget } from '../lib/widgets.js';
 import { setTopic } from '../lib/chatContext.js';
-import { VIDEOS } from '../data/videos.js';
 
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const named = (list, n, label, prefix) =>
@@ -39,15 +38,6 @@ const check = (q, label = 'Quick check') => `
     <div class="chk-opts">${q.options.map((o, i) => `<button type="button" data-i="${i}">${o}</button>`).join('')}</div>
     <p class="chk-why" role="status" aria-live="polite" hidden>${q.why}</p>
   </div>`;
-
-// "Watch to understand better" links for a lesson (see data/videos.js).
-const watch = (moduleId, itemId) => {
-  const list = VIDEOS[moduleId]?.[itemId];
-  if (!list?.length) return '';
-  return `<aside class="watch"><h2>Watch to understand better</h2><ul>${list.map((v) => `
-    <li><a href="${v.url}" target="_blank" rel="noopener noreferrer"><span class="watch-ic" aria-hidden="true">\u25b6</span>
-    <span><strong>${v.title}</strong><small>The Organic Chemistry Tutor on YouTube \u00b7 ${v.kind === 'video' ? 'video' : 'videos on this topic'}<span class="sr-only"> (opens in a new tab)</span></small></span></a></li>`).join('')}</ul></aside>`;
-};
 
 function block([t, a, b, c]) {
   switch (t) {
@@ -168,7 +158,7 @@ export function renderModule(el, id) {
     let body = '', title = item.name;
     if (itemId.startsWith('lesson-')) {
       const L = c.lessons[+itemId.slice(7) - 1]; title = L.title;
-      body = L.blocks.map(block).join('') + watch(m.id, itemId) + `<div class="rd-actions"><button type="button" class="btn btn-primary" data-finish="${itemId}">Mark complete and continue</button><button type="button" class="btn btn-ghost" data-back>Back to module</button></div>`;
+      body = L.blocks.map(block).join('') + `<div class="rd-actions"><button type="button" class="btn btn-primary" data-finish="${itemId}">Mark complete and continue</button><button type="button" class="btn btn-ghost" data-back>Back to module</button></div>`;
     } else if (isQuiz) {
       body = quizBody();
     } else {

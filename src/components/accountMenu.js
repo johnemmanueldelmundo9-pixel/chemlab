@@ -15,8 +15,8 @@ export function mountAccount(slot) {
   }
   function renderIn(user) {
     root.innerHTML = `
-      <button type="button" class="acct-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Account menu"></button>
-      <div class="acct-menu" role="menu" hidden>
+      <button type="button" class="acct-btn" aria-haspopup="menu" aria-controls="acct-menu" aria-expanded="false" aria-label="Account menu"></button>
+      <div class="acct-menu" id="acct-menu" role="menu" hidden>
         <div class="acct-email"></div>
         <button type="button" role="menuitem" data-act="signout">Log out</button>
         <button type="button" role="menuitem" data-act="delete" class="acct-danger">Delete account</button>
@@ -41,7 +41,29 @@ export function mountAccount(slot) {
     else if (e.target.closest('.acct-btn')) toggleMenu(root.querySelector('.acct-menu').hidden);
   });
   addEventListener('click', (e) => { if (!root.contains(e.target)) toggleMenu(false); });
-  addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleMenu(false); });
+  addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const menu = root.querySelector('.acct-menu');
+    if (!menu || menu.hidden) return;
+    const inside = menu.contains(document.activeElement);
+    toggleMenu(false);
+    if (inside) root.querySelector('.acct-btn')?.focus();
+  });
+  root.addEventListener('keydown', (e) => {
+    const menu = root.querySelector('.acct-menu');
+    const btn = root.querySelector('.acct-btn');
+    if (!menu || !btn) return;
+    const items = [...menu.querySelectorAll('[role=menuitem]')];
+    if (!items.length) return;
+    if (e.key === 'ArrowDown' && document.activeElement === btn) { e.preventDefault(); toggleMenu(true); items[0].focus(); }
+    else if (e.key === 'ArrowUp' && document.activeElement === btn) { e.preventDefault(); toggleMenu(true); items[items.length - 1].focus(); }
+    else if (menu.contains(document.activeElement) && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+      e.preventDefault();
+      const i = items.indexOf(document.activeElement);
+      const next = e.key === 'ArrowDown' ? (i + 1) % items.length : (i - 1 + items.length) % items.length;
+      items[next].focus();
+    }
+  });
   addEventListener('chemlab:open-auth', (e) => openAuth(e.detail?.mode || 'signup'));
 
   onAuthChange((user) => (user ? renderIn(user) : renderOut()));

@@ -22,7 +22,7 @@ export function renderHome(el) {
         <div>
           <p class="eyebrow">Interactive chemistry</p>
           <h1>Chemistry you can <em>see, tweak</em> and actually understand.</h1>
-          <p class="hero-lead">Eight modules from lab safety to electrochemistry, each with lessons, live simulations, calculators and quizzes. Free, with an optional AI tutor that answers your questions.</p>
+          <p class="hero-lead">Eight modules are planned, from lab safety to electrochemistry. Modules 1 and 2 are ready now, each with lessons, live simulations, calculators and quizzes. Free, with an optional AI tutor that answers your questions.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#/module/${next.id}">${started ? 'Continue learning' : 'Start with Module 1'}</a>
             <a class="btn btn-ghost" href="#/modules">Browse all modules</a>
@@ -31,7 +31,7 @@ export function renderHome(el) {
             <a class="chip chip-link" href="#/periodic-table">Periodic table</a><span class="chip">${MODULES.length} modules</span><span class="chip">Simulations</span><span class="chip">Calculators</span><span class="chip">Quizzes</span><span class="chip">AI tutor</span>
           </div>
         </div>
-        <div class="atom-stage" aria-hidden="false">
+        <div class="atom-stage" aria-hidden="true">
           ${atomSvg()}
           <span class="formula" style="left:0;top:12%">PV = nRT</span>
           <span class="formula" style="right:0;top:22%">ΔH = ΣH(p) − ΣH(r)</span>
@@ -89,7 +89,7 @@ export function renderHome(el) {
           <div>
             <p class="eyebrow">AI tutor</p>
             <h2>Stuck? Ask ChemBot.</h2>
-            <p>Ask about any concept and get a step-by-step explanation. ChemBot only answers chemistry, and it tailors its answers to the module you are on. The calculators do the final maths, so numbers are always checked.</p>
+            <p>Ask about any concept and get a step-by-step explanation. ChemBot only answers chemistry, and it tailors its answers to the module you are on. AI can be wrong, so check important numbers with the step-by-step calculators.</p>
             <button class="btn btn-primary" type="button" id="open-chat">Ask ChemBot</button>
           </div>
           <div class="chat-demo" aria-hidden="true">
