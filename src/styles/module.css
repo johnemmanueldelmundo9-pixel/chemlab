@@ -2,11 +2,16 @@
    Same colour logic as .module-card: --h (set inline from modules.js) drives --mod / --mod-soft,
    with a brighter variant in dark mode. Everything else uses tokens.css variables. */
 .mod-page {
-  --mod: oklch(0.58 0.15 var(--h));
+  --mod: oklch(0.58 0.15 var(--h));      /* decoration: bars, tints, progress fills */
+  --mod-ink: oklch(0.50 0.15 var(--h));  /* text and button fills: 5:1 or better on --bg */
   --mod-soft: oklch(0.95 0.035 var(--h));
 }
-:root[data-theme="dark"] .mod-page { --mod: oklch(0.76 0.13 var(--h)); --mod-soft: oklch(0.31 0.06 var(--h)); }
-.mod-page .eyebrow { color: var(--mod); }
+:root[data-theme="dark"] .mod-page {
+  --mod: oklch(0.76 0.13 var(--h));
+  --mod-ink: oklch(0.76 0.13 var(--h));
+  --mod-soft: oklch(0.31 0.06 var(--h));
+}
+.mod-page .eyebrow { color: var(--mod-ink); }
 
 /* Hero */
 .mod-hero {
@@ -24,7 +29,7 @@
 .mod-lead { margin-top: 14px; max-width: 38em; color: var(--ink-2); font-size: clamp(1.02rem, 2vw, 1.15rem); }
 .mod-topics { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
 .mod-cta { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 12px; }
-.mod-page .btn-primary { background: var(--mod); color: var(--brand-ink); }
+.mod-page .btn-primary { background: var(--mod-ink); color: var(--brand-ink); }
 :root[data-theme="dark"] .mod-page .btn-primary { color: oklch(0.2 0.03 255); }
 
 .mod-summary {
@@ -32,7 +37,7 @@
   background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); position: relative;
 }
 .mod-summary::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; border-radius: var(--radius) var(--radius) 0 0; background: var(--mod); }
-.mod-summary-icon { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--mod-soft); color: var(--mod); }
+.mod-summary-icon { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--mod-soft); color: var(--mod-ink); }
 .mod-summary-icon svg { width: 26px; height: 26px; }
 .mod-summary strong { font-size: 1.15rem; font-variant-numeric: tabular-nums; }
 .mod-summary .progress { width: 100%; height: 8px; }
@@ -44,7 +49,7 @@
   display: flex; gap: 14px; align-items: flex-start; margin-bottom: clamp(24px, 4vw, 36px);
   padding: 18px 20px; border-radius: var(--radius); border: 1px dashed var(--line); background: var(--surface); color: var(--ink-2);
 }
-.mod-coming svg { flex: none; width: 28px; height: 28px; color: var(--mod); }
+.mod-coming svg { flex: none; width: 28px; height: 28px; color: var(--mod-ink); }
 
 /* The four parts */
 .mod-parts { padding-block: clamp(36px, 6vw, 72px); }
@@ -55,7 +60,7 @@
 }
 .mod-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; border-radius: var(--radius) var(--radius) 0 0; background: var(--mod); }
 .mod-card header { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: start; }
-.mod-card-icon { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--mod-soft); color: var(--mod); }
+.mod-card-icon { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--mod-soft); color: var(--mod-ink); }
 .mod-card-icon svg { width: 24px; height: 24px; }
 .mod-card h3 { font-size: 1.15rem; }
 .mod-card header p { margin-top: 4px; color: var(--ink-2); font-size: .92rem; }
@@ -74,7 +79,7 @@ a.mod-item:hover { border-color: var(--mod); background: var(--mod-soft); }
   flex: none; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%;
   border: 2px solid var(--line); color: var(--brand-ink);
 }
-.mi-state[data-done="1"] { background: var(--mod); border-color: var(--mod); }
+.mi-state[data-done="1"] { background: var(--mod-ink); border-color: var(--mod-ink); }
 :root[data-theme="dark"] .mi-state[data-done="1"] { color: oklch(0.2 0.03 255); }
 .mi-state svg { width: 16px; height: 16px; }
 

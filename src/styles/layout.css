@@ -25,7 +25,7 @@
 .section-head p { margin-top: 12px; color: var(--ink-2); font-size: 1.05rem; }
 
 /* ---------- Footer ---------- */
-.site-footer { border-top: 1px solid var(--line); padding-block: 36px; color: var(--ink-3); font-size: .9rem; }
+.site-footer { border-top: 1px solid var(--line); padding-block: 36px 96px; color: var(--ink-3); font-size: .9rem; }
 .site-footer .container { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; align-items: center; }
 .site-footer button { background: none; border: 0; padding: 0; color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; }
 .site-footer button:hover { color: var(--ink); }

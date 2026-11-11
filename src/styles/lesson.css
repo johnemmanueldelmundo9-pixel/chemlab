@@ -89,7 +89,7 @@ button.mod-item { width: 100%; text-align: left; font: inherit; cursor: pointer;
 :root[data-theme="dark"] .rev-ok { color: oklch(0.82 0.14 150); }
 .rd-prog { margin-top: 8px; height: 8px; }
 .rd-prog > i { background: var(--mod); }
-.mod-done { margin: 0; color: var(--mod); font-weight: 700; }
+.mod-done { margin: 0; color: var(--mod-ink); font-weight: 700; }
 
 .wd-h { margin: 0; font-size: 1rem; color: var(--ink); }
 .wd-sec + .wd-sec { border-top: 1px solid var(--line); }
@@ -135,7 +135,7 @@ button.mod-item { width: 100%; text-align: left; font: inherit; cursor: pointer;
 .rd h2 { display: flex; align-items: center; gap: 10px; }
 .rd h2::before { content: ""; flex: none; width: 8px; height: 1.1em; margin-left: -16px; border-radius: 4px; background: var(--mod); }
 .rd ol { margin: 12px 0 0; padding-left: 1.4em; display: grid; gap: 6px; color: var(--ink-2); max-width: 68ch; }
-.rd li::marker { color: var(--mod); font-weight: 700; }
+.rd li::marker { color: var(--mod-ink); font-weight: 700; }
 .rd .tbl { border-radius: 10px; }
 .wd-body { border-radius: 0 0 var(--radius) var(--radius); }
 .wd-tile svg { filter: drop-shadow(0 1px 0 rgb(0 0 0 / .06)); }

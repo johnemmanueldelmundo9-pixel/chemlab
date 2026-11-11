@@ -32,6 +32,7 @@ export function mountChat(app) {
   const fab = document.createElement('button');
   fab.className = 'chat-fab';
   fab.type = 'button';
+  fab.setAttribute('aria-label', 'Ask ChemBot');
   fab.setAttribute('aria-expanded', 'false');
   fab.setAttribute('aria-controls', 'chembot-panel');
   fab.innerHTML = `${icon('chat')}<span>Ask ChemBot</span>`;
