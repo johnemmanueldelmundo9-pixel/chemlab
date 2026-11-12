@@ -100,14 +100,18 @@ export function renderModule(el, id) {
       <section class="section mod-parts"><div class="container">
         ${missing ? `<div class="mod-coming">${icon('flask')}<p><strong>${ready ? 'Some parts are still being written.' : 'This module is being built.'}</strong> Planned: ${plural(lessons, 'lesson')}${sims ? `, ${plural(sims, 'simulation')}` : ''}${calcs ? `, ${plural(calcs, 'calculator')}` : ''} and a quiz.</p></div>` : ''}
         <div class="section-head"><h2>${ready ? 'What\u2019s in this module' : 'What will be in this module'}</h2><p>Work through the parts in order, or jump to the one you need.</p></div>
-        <div class="mod-grid">${sections.map((s) => `
-          <section class="mod-card" aria-labelledby="mc-${s.key}">
-            <header><span class="mod-card-icon">${icon(s.icon)}</span><div><h3 id="mc-${s.key}">${s.title}</h3><p>${s.blurb}</p></div>
-              <span class="chip mod-card-count">${s.items.filter((it) => done.has(it.id)).length}/${s.items.length}</span></header>
+        <div class="mod-outline">${sections.map((s) => `
+          <section class="mod-group" data-key="${s.key}" aria-labelledby="mc-${s.key}">
+            <header class="mod-group-head">
+              <span class="mod-group-icon">${icon(s.icon)}</span>
+              <div><h3 id="mc-${s.key}">${s.title}</h3><p>${s.blurb}</p></div>
+              <span class="mod-group-count">${s.items.filter((it) => done.has(it.id)).length}/${s.items.length}</span>
+            </header>
             <ul class="mod-list">${s.items.map((it) => {
               const tick = done.has(it.id) ? `<span class="mi-state" data-done="1">${icon('check')}<span class="sr-only">Completed</span></span>` : '<span class="mi-state" aria-hidden="true"></span>';
+              const meta = it.id === 'quiz' && c.quiz?.length ? `<span class="mi-meta">${c.quiz.length} questions</span>` : '';
               return has(m, it.id)
-                ? `<li><button type="button" class="mod-item" data-open="${it.id}">${tick}<span class="mi-name">${it.name}</span></button></li>`
+                ? `<li><button type="button" class="mod-item" data-open="${it.id}">${tick}<span class="mi-name">${it.name}</span>${meta}</button></li>`
                 : `<li><span class="mod-item is-soon">${tick}<span class="mi-name">${it.name}</span><span class="badge badge-soon">Soon</span></span></li>`;
             }).join('')}</ul>
           </section>`).join('')}</div>
@@ -151,13 +155,43 @@ export function renderModule(el, id) {
       <div class="rd-actions"><button type="button" class="btn btn-primary" data-next hidden>${view.i === qs.length - 1 ? 'See score' : 'Next question'}</button></div>`;
   }
 
+  /* ---------- desktop rail: the module's contents, always one click away ---------- */
+  function rail(itemId) {
+    const done = doneSet(), p = moduleProgress(m);
+    const groups = parts(m).map((s) => {
+      const rows = s.items.map((it, i) => {
+        const open = has(m, it.id), cur = it.id === itemId;
+        const tick = done.has(it.id)
+          ? `<span class="mi-state" data-done="1">${icon('check')}<span class="sr-only">Completed</span></span>`
+          : '';
+        const n = `<span class="ri-n">${String(i + 1).padStart(2, '0')}</span>`;
+        return open
+          ? `<li><button type="button" class="rd-rail-item" data-open="${it.id}"${cur ? ' aria-current="page"' : ''}>${n}<span class="ri-name">${it.name}</span>${tick}</button></li>`
+          : `<li><span class="rd-rail-item is-soon">${n}<span class="ri-name">${it.name}</span><span class="ri-soon">Soon</span></span></li>`;
+      }).join('');
+      return `<p class="rd-rail-group">${s.title}</p><ul class="rd-rail-list">${rows}</ul>`;
+    }).join('');
+    return `<aside class="rd-rail" aria-label="Contents of ${m.title}">
+      <button type="button" class="rd-rail-back" data-back>\u2190 Module overview</button>
+      <p class="eyebrow">Module ${String(m.num).padStart(2, '0')}</p>
+      <p class="rd-rail-title">${m.title}</p>
+      <div class="rd-rail-prog">
+        <div class="progress" role="progressbar" aria-label="${m.title} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p.pct}"><i style="width:${p.pct}%"></i></div>
+        <span>${p.done} of ${totalItems(m)} activities done</span>
+      </div>
+      ${groups}
+    </aside>`;
+  }
+
   function reader() {
     const itemId = view.id, isQuiz = itemId === 'quiz', item = allItems().find((it) => it.id === itemId);
     const kind = isQuiz ? 'Quiz' : itemId.startsWith('lesson') ? 'Lesson' : itemId.startsWith('sim') ? 'Simulation' : 'Calculator';
     const idx = isQuiz ? '' : ` ${itemId.split('-')[1]} of ${m.plan[itemId.startsWith('lesson') ? 'lessons' : itemId.startsWith('sim') ? 'sims' : 'calcs']}`;
-    let body = '', title = item.name;
+    let body = '', title = item.name, mins = 0;
     if (itemId.startsWith('lesson-')) {
       const L = c.lessons[+itemId.slice(7) - 1]; title = L.title;
+      const words = L.blocks.map((b) => b.slice(1).map((x) => (typeof x === 'string' ? x : JSON.stringify(x))).join(' ')).join(' ').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+      mins = Math.max(1, Math.round(words / 200));
       body = L.blocks.map(block).join('') + `<div class="rd-actions"><button type="button" class="btn btn-primary" data-finish="${itemId}">Mark complete and continue</button><button type="button" class="btn btn-ghost" data-back>Back to module</button></div>`;
     } else if (isQuiz) {
       body = quizBody();
@@ -165,14 +199,18 @@ export function renderModule(el, id) {
       const t = c.tools[itemId]; title = t.title;
       body = `<p>${t.intro}</p><div class="wd" data-w="${t.widget}"></div><div class="rd-actions"><button type="button" class="btn btn-primary" data-finish="${itemId}">Mark as done</button><button type="button" class="btn btn-ghost" data-back>Back to module</button></div>`;
     }
+    const meta = [`${kind}${idx}`].concat(mins ? [`${mins} min read`] : []).map((x) => `<span>${x}</span>`).join(' <span class="rd-meta-sep">\u00b7</span> ');
     el.innerHTML = `
     <div class="mod-page" style="--h:${m.hue}">
-      <article class="container rd">
-        <button type="button" class="rd-back" data-back>\u2190 ${m.title}</button>
-        <p class="eyebrow">${kind}${idx}</p>
-        <h1 tabindex="-1">${title}</h1>
-        ${body}
-      </article>
+      <div class="container rd-shell">
+        ${rail(itemId)}
+        <article class="rd rd-main">
+          <button type="button" class="rd-back" data-back>\u2190 ${m.title}</button>
+          <p class="eyebrow rd-meta">${meta}</p>
+          <h1 tabindex="-1">${title}</h1>
+          ${body}
+        </article>
+      </div>
     </div>`;
     el.querySelectorAll('.wd').forEach((n) => mountWidget(n.dataset.w, n));
     setTopic(isQuiz ? `Taking the quiz for ${m.title}` : `Studying ${title} in ${m.title}`);

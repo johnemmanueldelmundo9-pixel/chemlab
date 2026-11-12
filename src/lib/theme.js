@@ -1,4 +1,5 @@
 const KEY = 'chemlab:theme';
+const BAR = { light: '#fbfaf6', dark: '#0a121c' };
 
 export function currentTheme() {
   return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
@@ -6,6 +7,8 @@ export function currentTheme() {
 
 export function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
+  const meta = document.getElementById('theme-color');
+  if (meta) meta.content = BAR[theme] || BAR.light;
   try { localStorage.setItem(KEY, theme); } catch { /* ignore */ }
 }
 

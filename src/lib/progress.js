@@ -34,8 +34,12 @@ export function moduleProgress(m) {
 }
 
 export function overallProgress() {
+  // Only modules that are actually open count: a student cannot finish a module that is still being written.
   let done = 0, total = 0;
-  for (const m of MODULES) { const p = moduleProgress(m); done += p.done; total += p.total; }
+  for (const m of MODULES) {
+    if (m.status !== 'ready') continue;
+    const p = moduleProgress(m); done += p.done; total += p.total;
+  }
   return { done, total, pct: total ? Math.round((done / total) * 100) : 0 };
 }
 

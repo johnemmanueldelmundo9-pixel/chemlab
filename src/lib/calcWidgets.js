@@ -255,4 +255,5 @@ function mole(h) {
   [s, a, u].forEach((el) => el.addEventListener('input', run)); run();
 }
 
-export const CALC_WIDGETS = { sigtools, scinot, convert, measure, mole };
+// sigfigs / rounder / sigops are also used one at a time inside the Module 2 lesson on significant figures.
+export const CALC_WIDGETS = { sigtools, sigfigs, rounder, sigops, scinot, convert, measure, mole };

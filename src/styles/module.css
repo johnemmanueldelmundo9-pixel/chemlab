@@ -19,16 +19,16 @@
     radial-gradient(60% 90% at 90% 0%, color-mix(in oklab, var(--mod) 16%, transparent), transparent 70%),
     var(--bg);
   border-bottom: 1px solid var(--line);
-  padding-block: clamp(28px, 5vw, 56px);
+  padding-block: clamp(24px, 4vw, 48px);
 }
-.mod-hero .back { display: inline-block; margin-bottom: 18px; color: var(--ink-3); text-decoration: none; font-weight: 550; font-size: .92rem; }
+.mod-hero .back { display: inline-block; margin-bottom: 16px; color: var(--ink-3); text-decoration: none; font-weight: 550; font-size: .92rem; }
 .mod-hero .back:hover { color: var(--ink); }
 .mod-hero-grid { display: grid; gap: 28px; align-items: center; }
 @media (min-width: 860px) { .mod-hero-grid { grid-template-columns: 1.4fr .8fr; gap: 48px; } }
-.mod-hero h1 { font-size: clamp(2rem, 5.5vw, 3.2rem); font-weight: 800; letter-spacing: -0.03em; }
-.mod-lead { margin-top: 14px; max-width: 38em; color: var(--ink-2); font-size: clamp(1.02rem, 2vw, 1.15rem); }
-.mod-topics { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
-.mod-cta { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 12px; }
+.mod-hero h1 { font-size: var(--fs-h1); font-weight: 800; letter-spacing: -0.03em; }
+.mod-lead { margin-top: 14px; max-width: 38em; color: var(--ink-2); font-size: var(--fs-lead); line-height: 1.6; }
+.mod-topics { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; }
+.mod-cta { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; }
 .mod-page .btn-primary { background: var(--mod-ink); color: var(--brand-ink); }
 :root[data-theme="dark"] .mod-page .btn-primary { color: oklch(0.2 0.03 255); }
 
@@ -39,10 +39,10 @@
 .mod-summary::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; border-radius: var(--radius) var(--radius) 0 0; background: var(--mod); }
 .mod-summary-icon { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--mod-soft); color: var(--mod-ink); }
 .mod-summary-icon svg { width: 26px; height: 26px; }
-.mod-summary strong { font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.mod-summary strong { font-size: 1.25rem; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 .mod-summary .progress { width: 100%; height: 8px; }
 .mod-summary .progress > i { background: var(--mod); }
-.mod-summary-meta { color: var(--ink-3); font-size: .88rem; }
+.mod-summary-meta { color: var(--ink-3); font-size: .86rem; }
 
 /* "Being built" notice (replaces the old .coming box) */
 .mod-coming {
@@ -52,21 +52,26 @@
 .mod-coming svg { flex: none; width: 28px; height: 28px; color: var(--mod-ink); }
 
 /* The four parts */
-.mod-parts { padding-block: clamp(36px, 6vw, 72px); }
-.mod-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
-.mod-card {
-  position: relative; display: flex; flex-direction: column; gap: 16px; padding: 22px;
-  border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow);
+.mod-parts { padding-block: clamp(40px, 6vw, 72px); }
+/* The parts read as a contents page: a label column and its items beside it. */
+.mod-outline {
+  border: 1px solid var(--line); border-top: 4px solid var(--mod);
+  border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); overflow: hidden;
 }
-.mod-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; border-radius: var(--radius) var(--radius) 0 0; background: var(--mod); }
-.mod-card header { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: start; }
-.mod-card-icon { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--mod-soft); color: var(--mod-ink); }
-.mod-card-icon svg { width: 24px; height: 24px; }
-.mod-card h3 { font-size: 1.15rem; }
-.mod-card header p { margin-top: 4px; color: var(--ink-2); font-size: .92rem; }
-.mod-card-count { font-variant-numeric: tabular-nums; }
-
+.mod-group { display: grid; gap: 16px 32px; padding: 20px 24px; }
+.mod-group + .mod-group { border-top: 1px solid var(--line); }
+@media (min-width: 900px) { .mod-group { grid-template-columns: 250px minmax(0, 1fr); align-items: start; } }
+.mod-group-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+.mod-group-icon { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--mod-soft); color: var(--mod-ink); }
+.mod-group-icon svg { width: 20px; height: 20px; }
+.mod-group h3 { font-size: 1.0625rem; line-height: 1.25; }
+.mod-group-head p { margin-top: 4px; color: var(--ink-2); font-size: .88rem; line-height: 1.45; }
+.mod-group-count { padding-top: 4px; font-family: var(--font-mono); font-size: .7rem; letter-spacing: .04em; color: var(--ink-3); }
 .mod-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+@media (min-width: 900px) {
+  .mod-group .mod-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 6px 10px; }
+  .mod-group[data-key="quiz"] .mod-list { grid-template-columns: minmax(0, 1fr); }
+}
 .mod-item {
   display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius-sm);
   border: 1px solid var(--line); background: var(--bg); color: var(--ink); text-decoration: none; font-weight: 550;
@@ -75,6 +80,7 @@
 a.mod-item:hover { border-color: var(--mod); background: var(--mod-soft); }
 .mod-item.is-soon { color: var(--ink-3); font-weight: 450; }
 .mi-name { flex: 1; min-width: 0; }
+.mi-meta { flex: none; font-size: .78rem; font-weight: 500; color: var(--ink-3); }
 .mi-state {
   flex: none; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%;
   border: 2px solid var(--line); color: var(--brand-ink);

@@ -1,5 +1,5 @@
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-bottom: 96px; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-bottom: 96px; overflow-x: clip; }
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -8,7 +8,10 @@ body {
   color: var(--ink);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
+/* No 300ms double-tap delay on phones; pinch-zoom and scrolling still work. */
+a, button, [role="button"], summary, label { touch-action: manipulation; }
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
 p { text-wrap: pretty; }
@@ -25,7 +28,7 @@ svg { display: block; }
 }
 .skip-link:focus { top: 12px; }
 
-.visually-hidden {
+.visually-hidden, .sr-only {
   position: absolute !important; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap;
 }

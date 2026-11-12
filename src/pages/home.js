@@ -1,4 +1,4 @@
-import { MODULES } from '../data/modules.js';
+import { MODULES, totalItems } from '../data/modules.js';
 import { moduleCard } from '../components/moduleCard.js';
 import { atomSvg } from '../components/atom.js';
 import { overallProgress } from '../lib/progress.js';
@@ -15,6 +15,8 @@ export function renderHome(el) {
   const all = overallProgress();
   const started = all.done > 0;
   const next = MODULES[0];
+  const ready = MODULES.filter((m) => m.status === 'ready');
+  const activities = ready.reduce((n, m) => n + totalItems(m), 0);
 
   el.innerHTML = `
     <section class="hero">
@@ -22,14 +24,16 @@ export function renderHome(el) {
         <div>
           <p class="eyebrow">Interactive chemistry</p>
           <h1>Chemistry you can <em>see, tweak</em> and actually understand.</h1>
-          <p class="hero-lead">Eight modules are planned, from lab safety to electrochemistry. Modules 1 and 2 are ready now, each with lessons, live simulations, calculators and quizzes. Free, with an optional AI tutor that answers your questions.</p>
+          <p class="hero-lead">Eight modules are planned, from lab safety to electrochemistry. Modules 1 and 2 are ready now: 13 lessons, 7 live simulations, 5 calculators and 2 quizzes. Free, with an optional AI tutor that answers your questions.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#/module/${next.id}">${started ? 'Continue learning' : 'Start with Module 1'}</a>
             <a class="btn btn-ghost" href="#/modules">Browse all modules</a>
           </div>
-          <div class="hero-pills">
-            <a class="chip chip-link" href="#/periodic-table">Periodic table</a><span class="chip">${MODULES.length} modules</span><span class="chip">Simulations</span><span class="chip">Calculators</span><span class="chip">Quizzes</span><span class="chip">AI tutor</span>
-          </div>
+          <ul class="hero-facts">
+            <li><strong>${MODULES.length}</strong> modules planned</li>
+            <li><strong>${ready.length}</strong> open now</li>
+            <li><strong>${activities}</strong> activities</li>
+          </ul>
         </div>
         <div class="atom-stage" aria-hidden="true">
           ${atomSvg()}
@@ -43,15 +47,17 @@ export function renderHome(el) {
 
     <section class="section" id="modules">
       <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Curriculum</p>
-          <h2>Choose a module</h2>
-          <p>Follow them in order, or jump straight to what you're studying.</p>
-        </div>
-        <div class="progress-summary">
-          <strong>${all.pct}% overall</strong>
-          <div class="progress" role="progressbar" aria-label="Overall progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${all.pct}"><i style="width:${all.pct}%"></i></div>
-          <span class="chip">${all.done} of ${all.total} activities</span>
+        <div class="section-head section-head-row">
+          <div>
+            <p class="eyebrow">Curriculum</p>
+            <h2>Choose a module</h2>
+            <p>Follow them in order, or jump straight to what you're studying.</p>
+          </div>
+          <div class="progress-summary">
+            <div class="ps-top"><span class="ps-label">Your progress</span><strong class="ps-pct">${all.pct}%</strong></div>
+            <div class="progress" role="progressbar" aria-label="Overall progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${all.pct}"><i style="width:${all.pct}%"></i></div>
+            <span class="ps-meta">${all.done} of ${all.total} activities</span>
+          </div>
         </div>
         <div class="module-grid">${MODULES.map(moduleCard).join('')}</div>
       </div>
