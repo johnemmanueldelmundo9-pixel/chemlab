@@ -4,6 +4,7 @@
 //              ['ex', title, problem, [step html, ...]]   a worked example revealed one step at a time
 //              ['img', src, alt, caption]   an image figure (see pages/module.js)
 // Items not listed here show as "Soon" on the module page. A module only opens when its status is 'ready'.
+import { THERMO, ELECTRO } from './solvers.js';
 import { LAB_SAFETY } from './labSafety.js';
 const chk = (q, options, answer, why) => ['check', { q, options, answer, why }];
 
@@ -283,3 +284,5 @@ export const CONTENT = {
     ],
   },
 };
+CONTENT['thermo-equilibrium'] = THERMO;
+CONTENT['electrochemistry'] = ELECTRO;
