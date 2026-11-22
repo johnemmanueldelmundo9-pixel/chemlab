@@ -195,3 +195,13 @@ button.rd-rail-item:hover { background: var(--surface-2); color: var(--ink); }
 .legal-actions { margin-top: 26px; }
 .legal-foot { margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .84rem; color: var(--ink-3); }
 .legal-foot a { color: var(--ink-2); }
+
+/* ---------- Solver widgets (Modules 7 and 8) ---------- */
+.wd-out-col { display: grid; gap: 12px; }
+.wd-hrow { display: grid; gap: 8px; grid-template-columns: 1fr 110px; margin-bottom: 8px; }
+.wd-hrow input { width: 100%; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; font-size: .95rem; }
+.wd-steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; }
+.wd-steps li { color: var(--ink); }
+.wd-out-col small { font-size: .72em; color: var(--ink-3); }
+.wd-out-col sub, .wd-out-col sup { line-height: 0; }
+.wd-out-col .wd-grid dt { text-transform: none; }
