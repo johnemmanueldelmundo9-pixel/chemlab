@@ -69,7 +69,7 @@ export const MODULES = [
     icon: 'gas',
   },
   {
-    id: 'thermo-equilibrium', num: 7, hue: 55, status: 'soon',
+    id: 'thermo-equilibrium', num: 7, hue: 55, status: 'ready',
     title: 'Thermochemistry & Equilibrium',
     blurb: 'Energy changes in reactions and how systems settle at balance.',
     topics: ['Enthalpy & Hess', 'Calorimetry', "Le Chatelier"],
@@ -77,7 +77,7 @@ export const MODULES = [
     icon: 'flame',
   },
   {
-    id: 'electrochemistry', num: 8, hue: 135, status: 'soon',
+    id: 'electrochemistry', num: 8, hue: 135, status: 'ready',
     title: 'Electrochemistry',
     blurb: 'Redox reactions, batteries and the electricity of chemistry.',
     topics: ['Redox', 'Galvanic cells', 'Nernst equation'],
