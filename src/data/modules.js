@@ -1,8 +1,8 @@
-// Single source of truth for the eight modules.
+// Single source of truth for the four modules that ship.
 // `outline` names the lessons / simulations / calculators; `plan` counts must match it (they drive progress %).
 // `status` flips from "soon" to "ready" when a module is finished. Lesson text lives in data/content.js.
 // A module only opens its items when status is 'ready', so drafts in content.js stay hidden until then.
-// Module ids never change (progress is saved by id), so renumbering `num` does not lose anyone's progress.
+// Module ids never change (progress is saved by id). Modules 7 and 8 keep their course numbers.
 
 export const MODULES = [
   {
@@ -32,61 +32,43 @@ export const MODULES = [
     icon: 'flask',
   },
   {
-    id: 'atomic-periodicity', num: 3, hue: 275, status: 'soon',
-    title: 'Atomic Structure & Periodicity',
-    blurb: 'Inside the atom, and why the periodic table works.',
-    topics: ['Electron configuration', 'Isotopes', 'Periodic trends'],
-    outline: {
-      lessons: ['Atomic models', 'Protons, neutrons and electrons', 'Atomic number, mass number and isotopes', 'The periodic table', 'Quantum numbers', 'Electron configuration'],
-      sims: ['Quantum number explorer'],
-      calcs: ['Average atomic mass'],
-    },
-    plan: { lessons: 6, sims: 1, calcs: 1 },
-    icon: 'atom',
-  },
-  {
-    id: 'bonding-molecular', num: 4, hue: 340, status: 'soon',
-    title: 'Bonding & Molecular Structure',
-    blurb: 'How atoms join, and why molecules take their shapes.',
-    topics: ['Ionic & covalent', 'Lewis structures', 'VSEPR shapes'],
-    plan: { lessons: 5, sims: 2, calcs: 1 },
-    icon: 'molecule',
-  },
-  {
-    id: 'stoichiometry-reactions', num: 5, hue: 30, status: 'soon',
-    title: 'Stoichiometry & Chemical Reactions',
-    blurb: 'Count atoms by weighing them, and predict reaction yields.',
-    topics: ['The mole', 'Balancing equations', 'Limiting reagent'],
-    plan: { lessons: 6, sims: 1, calcs: 4 },
-    icon: 'balance',
-  },
-  {
-    id: 'states-gas-laws', num: 6, hue: 170, status: 'soon',
-    title: 'States of Matter & Gas Laws',
-    blurb: 'From solids to gases, and the laws that govern pressure, volume and temperature.',
-    topics: ['Boyle & Charles', 'Combined gas law', 'Ideal gas law'],
-    plan: { lessons: 5, sims: 2, calcs: 3 },
-    icon: 'gas',
-  },
-  {
-    id: 'thermo-equilibrium', num: 7, hue: 55, status: 'ready',
+    id: 'thermo-equilibrium', num: 7, hue: 55, status: 'ready', noQuiz: true,
     title: 'Thermochemistry & Equilibrium',
     blurb: 'Energy changes in reactions and how systems settle at balance.',
-    topics: ['Enthalpy & Hess', 'Calorimetry', "Le Chatelier"],
-    plan: { lessons: 6, sims: 2, calcs: 3 },
+    topics: ['Enthalpy & Hess', 'Calorimetry', 'Le Chatelier'],
+    outline: {
+      lessons: [],
+      sims: [],
+      calcs: [
+        'Heat and temperature change', 'Calorimetry', 'Heating curve of water',
+        'Hess’s law', 'Enthalpy of reaction from formation enthalpies',
+        'Free energy and spontaneity', 'Equilibrium constant, Q and Kp/Kc',
+        'ICE table solver', 'Le Chatelier’s principle',
+      ],
+    },
+    plan: { lessons: 0, sims: 0, calcs: 9 },
     icon: 'flame',
   },
   {
-    id: 'electrochemistry', num: 8, hue: 135, status: 'ready',
+    id: 'electrochemistry', num: 8, hue: 135, status: 'ready', noQuiz: true,
     title: 'Electrochemistry',
     blurb: 'Redox reactions, batteries and the electricity of chemistry.',
     topics: ['Redox', 'Galvanic cells', 'Nernst equation'],
-    plan: { lessons: 5, sims: 1, calcs: 2 },
+    outline: {
+      lessons: [],
+      sims: [],
+      calcs: [
+        'Oxidation numbers', 'Redox equation balancer', 'Cell potential, ΔG° and K',
+        'Nernst equation', 'Electrolysis (Faraday’s law)',
+      ],
+    },
+    plan: { lessons: 0, sims: 0, calcs: 5 },
     icon: 'bolt',
   },
 ];
 
 export const getModule = (id) => MODULES.find((m) => m.id === id);
 
-// Total trackable items in a module: every lesson, simulation, calculator + 1 quiz.
-export const totalItems = (m) => m.plan.lessons + m.plan.sims + m.plan.calcs + 1;
+// Total trackable items in a module: lessons, simulations, calculators and (when there is one) a quiz.
+// Modules 7 and 8 ship calculators only, so they have no quiz to count.
+export const totalItems = (m) => m.plan.lessons + m.plan.sims + m.plan.calcs + (m.noQuiz ? 0 : 1);

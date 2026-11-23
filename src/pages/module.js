@@ -20,7 +20,7 @@ function parts(m) {
     { key: 'sims', title: 'Simulations', icon: 'sliders', blurb: 'Change a setting and watch the chemistry respond.', items: named(o.sims, p.sims, 'Simulation', 'sim') },
     { key: 'calcs', title: 'Calculators', icon: 'calc', blurb: 'Step-by-step working for the maths in this module.', items: named(o.calcs, p.calcs, 'Calculator', 'calc') },
     { key: 'quiz', title: 'Quiz', icon: 'check', blurb: 'Instant feedback, with a review of anything you miss.', items: [{ id: 'quiz', name: 'Module quiz' }] },
-  ].filter((s) => s.items.length);
+  ].filter((s) => s.items.length && !(m.noQuiz && s.key === 'quiz'));
 }
 
 // An item opens only when the module is ready and its content exists.

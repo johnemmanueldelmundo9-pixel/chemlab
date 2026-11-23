@@ -5,17 +5,17 @@
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
 
   /* Type scale — one family, four clear levels. */
-  --fs-hero: clamp(2.35rem, 5vw, 3.5rem);      /* 37.6 → 56 */
-  --fs-h1: clamp(2rem, 4vw, 2.75rem);          /* 32 → 44 */
-  --fs-h2: clamp(1.5rem, 2.4vw, 2rem);         /* 24 → 32 */
-  --fs-h3: 1.1875rem;                          /* 19 */
+  --fs-hero: clamp(2.5rem, 5vw, 3.75rem);     /* 40 → 60 */
+  --fs-h1: clamp(2.125rem, 4vw, 2.875rem);    /* 34 → 46 */
+  --fs-h2: clamp(1.5rem, 2.4vw, 2rem);        /* 24 → 32 */
+  --fs-h3: 1.1875rem;                         /* 19 */
   --fs-lead: clamp(1.0625rem, 1.2vw, 1.1875rem);
   --fs-body: 1rem;
   --fs-sm: .875rem;
   --fs-xs: .8125rem;
   --fs-mono: .75rem;
 
-  /* Spacing — 4 px base, 8 px rhythm. */
+  /* Spacing — 4 px base, 8 px rhythm. Used, not just declared. */
   --sp-1: 4px;
   --sp-2: 8px;
   --sp-3: 12px;
@@ -38,12 +38,13 @@
   --brand-ink: oklch(0.99 0 0);
   --brand-soft: oklch(0.94 0.04 195);
   --accent: oklch(0.72 0.17 55);
-  --shadow: 0 1px 2px oklch(0.3 0.03 250 / .06), 0 8px 24px oklch(0.3 0.03 250 / .07);
-  --shadow-lg: 0 2px 4px oklch(0.3 0.03 250 / .06), 0 18px 40px oklch(0.3 0.03 250 / .13);
+  --shadow: 0 1px 2px oklch(0.3 0.03 250 / .05), 0 8px 24px oklch(0.3 0.03 250 / .06);
+  --shadow-lg: 0 2px 4px oklch(0.3 0.03 250 / .07), 0 18px 40px oklch(0.3 0.03 250 / .12);
 
-  --radius: 16px;
+  /* Ledger system: small radii, hairlines, two elevation levels. */
+  --radius: 14px;
   --radius-sm: 10px;
-  --radius-lg: 22px;
+  --radius-lg: 14px;
   --gutter: 16px;
   --max: 1160px;
 }

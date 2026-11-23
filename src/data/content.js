@@ -243,46 +243,6 @@ export const CONTENT = {
     },
   },
 
-  'atomic-periodicity': {
-    lessons: [
-      { title: 'Atomic models', blocks: [
-        ['p', 'The idea of the atom is old: Democritus called the smallest pieces of matter <em>atomos</em>, meaning uncuttable. It faded for centuries, then returned when chemists began measuring how elements combine. John Dalton turned it into a theory between 1803 and 1807.'],
-        ['table', ['Who', 'Discovery', 'Model'], [
-          ['Thomson (1897)', 'Cathode rays are streams of negative particles: electrons', 'Plum pudding: electrons embedded in a positive sphere'],
-          ['Millikan (1909)', 'Measured the electron charge, 1.602 \u00d7 10\u207b\u00b9\u2079 C', 'Allowed the electron mass to be calculated'],
-          ['Rutherford (1910)', 'Gold foil: a few alpha particles bounced straight back', 'Nuclear model: tiny, dense, positive nucleus'],
-        ]],
-        ['p', 'Rutherford found the proton in 1919, and Chadwick found the neutron in 1932. So the atom is made of electrons, protons and neutrons.'],
-        chk('What did the back-scattered alpha particles in the gold foil experiment show?', ['Atoms are solid spheres', 'A small, dense, positive nucleus exists', 'Electrons orbit in shells', 'Neutrons are charged'], 1, 'Only a tiny, dense, positively charged centre could turn an alpha particle back. This ruled out the plum-pudding model.'),
-      ] },
-      { title: 'Protons, neutrons and electrons', blocks: [
-        ['table', ['Particle', 'Charge', 'Mass (amu)'], [['Electron', '1\u2212', '5.486 \u00d7 10\u207b\u2074'], ['Proton', '1+', '1.0073'], ['Neutron', '0', '1.0087']]],
-        ['list', [
-          'Protons and neutrons sit in the tiny nucleus. Almost all of an atom\u2019s volume is the space where electrons are found.',
-          'Atoms have equal numbers of protons and electrons, so they have no net charge.',
-          'Most atoms are 100\u2013500 pm across. 1 \u00c5 = 100 pm = 10\u207b\u00b9\u2070 m.',
-          '1 amu = 1.66054 \u00d7 10\u207b\u00b2\u2074 g, a unit made for masses this small.',
-        ]],
-        chk('The charge of a proton is:', ['\u22121.602 \u00d7 10\u207b\u00b9\u2079 C', '+1.602 \u00d7 10\u207b\u00b9\u2079 C', '0', '+1.0073 C'], 1, 'Equal in size and opposite in sign to the electron\u2019s charge.'),
-      ] },
-      { title: 'Atomic number, mass number and isotopes', blocks: [
-        ['p', 'The <strong>atomic number (Z)</strong> is the number of protons, and it defines the element. The <strong>mass number (A)</strong> is protons + neutrons. <strong>Isotopes</strong> are atoms of the same element with different numbers of neutrons.'],
-        ['note', '\u00b9\u2079\u2077Au: Z = 79, so 79 protons and 79 electrons. Neutrons = 197 \u2212 79 = 118.'],
-        ['p', 'Elements occur as mixtures of isotopes, so the atomic mass on the periodic table is a weighted average. Chlorine is 75.78% \u00b3\u2075Cl (34.969 amu) and 24.22% \u00b3\u2077Cl (36.966 amu), which gives 35.45 amu. Try your own below.'],
-        ['w', 'isotope'],
-        chk('How many neutrons are in \u00b9\u2079\u2077Au?', ['79', '118', '197', '276'], 1, 'Neutrons = mass number \u2212 atomic number = 197 \u2212 79.'),
-      ] },
-    ],
-    tools: {
-      'sim-1': { title: 'Quantum number explorer', widget: 'quantum', intro: 'Choose n and see every allowed l, m\u2097, subshell and orbital count.' },
-      'calc-1': { title: 'Average atomic mass', widget: 'isotope', intro: 'Enter isotope abundances and masses to find the weighted average.' },
-    },
-    quiz: [
-      { q: 'Who discovered the neutron?', options: ['Thomson', 'Rutherford', 'Chadwick', 'Millikan'], answer: 2, why: 'James Chadwick found the neutron in 1932.' },
-      { q: 'An atom has 17 protons and 18 neutrons. Its mass number is:', options: ['17', '18', '35', '1'], answer: 2, why: 'Mass number = protons + neutrons = 35.' },
-      { q: 'Isotopes of an element differ in their number of:', options: ['Protons', 'Electrons in the neutral atom', 'Neutrons', 'Atomic number'], answer: 2, why: 'Same protons (same element), different neutrons.' },
-    ],
-  },
 };
 CONTENT['thermo-equilibrium'] = THERMO;
 CONTENT['electrochemistry'] = ELECTRO;

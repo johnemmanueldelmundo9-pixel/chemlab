@@ -6,8 +6,8 @@ import { icon } from '../lib/icons.js';
 
 const STEPS = [
   ['book', 'Learn', 'Short, plain-language lessons that build one idea at a time.'],
-  ['sliders', 'Simulate', 'Drag sliders and watch gases, atoms and reactions respond live.'],
-  ['calc', 'Calculate', 'Step-by-step calculators for the maths: moles, gas laws, enthalpy, cell potential.'],
+  ['sliders', 'Simulate', 'Drag sliders and watch matter and reactions respond live.'],
+  ['calc', 'Calculate', 'Step-by-step calculators for the maths: moles, enthalpy, equilibrium, cell potential and redox.'],
   ['check', 'Quiz', 'Instant feedback with worked solutions, so mistakes become lessons.'],
 ];
 
@@ -24,13 +24,13 @@ export function renderHome(el) {
         <div>
           <p class="eyebrow">Interactive chemistry</p>
           <h1>Chemistry you can <em>see, tweak</em> and actually understand.</h1>
-          <p class="hero-lead">Eight modules are planned, from lab safety to electrochemistry. Modules 1 and 2 are ready now: 13 lessons, 7 live simulations, 5 calculators and 2 quizzes. Free, with an optional AI tutor that answers your questions.</p>
+          <p class="hero-lead">Four modules are available: lab safety, basic concepts, thermochemistry and electrochemistry. They contain 13 lessons, 7 live simulations, 14 calculators and 2 quizzes. Free, with an optional AI tutor that answers your questions.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#/module/${next.id}">${started ? 'Continue learning' : 'Start with Module 1'}</a>
             <a class="btn btn-ghost" href="#/modules">Browse all modules</a>
           </div>
           <ul class="hero-facts">
-            <li><strong>${MODULES.length}</strong> modules planned</li>
+            <li><strong>${MODULES.length}</strong> modules available</li>
             <li><strong>${ready.length}</strong> open now</li>
             <li><strong>${activities}</strong> activities</li>
           </ul>
@@ -40,7 +40,7 @@ export function renderHome(el) {
           <span class="formula" style="left:0;top:12%">PV = nRT</span>
           <span class="formula" style="right:0;top:22%">ΔH = ΣH(p) − ΣH(r)</span>
           <span class="formula" style="left:4%;bottom:14%">E°cell = E°red − E°ox</span>
-          <span class="formula" style="right:6%;bottom:6%">pH = −log[H⁺]</span>
+          <span class="formula" style="right:6%;bottom:6%">ΔG = ΔH − TΔS</span>
         </div>
       </div>
     </section>

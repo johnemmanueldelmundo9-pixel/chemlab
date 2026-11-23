@@ -3,7 +3,7 @@
 /* ---------- Header ---------- */
 .site-header {
   position: sticky; top: 0; z-index: 50;
-  background: color-mix(in oklab, var(--bg) 85%, transparent);
+  background: var(--bg);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
@@ -14,15 +14,16 @@
 .brand-mark { width: 32px; height: 32px; color: var(--brand); }
 .brand span em { font-style: normal; color: var(--brand); }
 .nav { display: none; margin-left: auto; gap: 2px; }
-.nav a { padding: 8px 14px; border-radius: 999px; text-decoration: none; color: var(--ink-2); font-weight: 550; font-size: .95rem; }
-.nav a:hover { background: var(--surface-2); color: var(--ink); }
+.nav a { padding: var(--sp-2) var(--sp-3); border-radius: 6px; text-decoration: none; color: var(--ink-2); font-weight: 550; font-size: var(--fs-sm); border-bottom: 2px solid transparent; }
+.nav a:hover { color: var(--ink); border-bottom-color: var(--brand); }
 .header-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
 @media (min-width: 1060px) { .nav { display: flex; } .header-actions { margin-left: 8px; } }
 
 /* ---------- Sections ---------- */
-.section { padding-block: clamp(48px, 6vw, 80px); }
-.section-head { max-width: 640px; margin-bottom: clamp(28px, 4vw, 40px); }
-.eyebrow { font-family: var(--font-mono); font-size: .75rem; text-transform: uppercase; letter-spacing: .12em; color: var(--brand); font-weight: 600; margin-bottom: 10px; }
+.section { padding-block: clamp(var(--sp-7), 6vw, var(--sp-8)); }
+.section-head { max-width: 640px; margin-bottom: clamp(var(--sp-5), 4vw, var(--sp-6)); }
+.eyebrow { display: flex; align-items: center; gap: var(--sp-3); font-family: var(--font-mono); font-size: var(--fs-mono); text-transform: uppercase; letter-spacing: .12em; color: var(--brand); font-weight: 600; margin-bottom: var(--sp-3); }
+.eyebrow::after { content: ""; width: var(--sp-5); height: 1px; background: currentColor; opacity: .5; }
 .section-head h2 { font-size: var(--fs-h2); letter-spacing: -0.025em; }
 .section-head p { margin-top: 12px; color: var(--ink-2); font-size: 1.0625rem; max-width: 46em; }
 
@@ -33,24 +34,28 @@
 /* ---------- Footer ---------- */
 .site-footer { border-top: 1px solid var(--line); padding-block: 36px calc(96px + env(safe-area-inset-bottom, 0px)); color: var(--ink-3); font-size: .9rem; }
 .site-footer .container { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; align-items: center; }
-.site-footer button { background: none; border: 0; padding: 0; color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; }
+.site-footer button { display: inline-flex; align-items: center; min-height: 44px; background: none; border: 0; padding: 0; color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; }
 .site-footer button:hover { color: var(--ink); }
-.footer-links { display: flex; flex-wrap: wrap; gap: 6px 16px; }
-.footer-links a { color: var(--ink-3); text-decoration: none; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 0 var(--sp-4); }
+.footer-links a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-3); text-decoration: none; }
 .footer-links a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
-/* ---------- First-visit storage notice ---------- */
+/* ---------- First-visit storage notice ----------
+   A slim banner above the app, not a fixed overlay: it never covers a CTA, a fact
+   or a module card. It disappears from the flow when dismissed. */
 .storage-notice {
-  position: fixed; left: 16px; bottom: 16px; z-index: 55;
-  width: min(420px, calc(100vw - 32px));
-  display: flex; gap: 14px; align-items: center; justify-content: space-between;
-  padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius);
-  background: var(--surface); color: var(--ink-2); box-shadow: var(--shadow-lg);
-  font-size: .86rem; line-height: 1.45;
+  order: 1; width: 100%;
+  display: flex; gap: var(--sp-4); align-items: center; justify-content: space-between;
+  padding: var(--sp-3) max(var(--gutter), env(safe-area-inset-left));
+  border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+  background: var(--bg-tint); color: var(--ink-2);
+  font-size: var(--fs-sm); line-height: 1.45;
 }
 .storage-notice p { margin: 0; }
 .storage-notice a { color: var(--brand); }
 .storage-notice .btn { flex: none; }
+#app { order: 2; }
 @media (max-width: 620px) {
-  .storage-notice { left: 12px; right: 12px; bottom: 84px; width: auto; flex-direction: column; align-items: flex-start; }
+  .storage-notice { align-items: flex-start; flex-direction: column; gap: var(--sp-2); }
+  .storage-notice p { font-size: var(--fs-xs); }
 }

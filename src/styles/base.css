@@ -9,7 +9,10 @@ body {
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+  display: flex;
+  flex-direction: column;
 }
+#app { flex: 1; min-width: 0; }
 /* No 300ms double-tap delay on phones; pinch-zoom and scrolling still work. */
 a, button, [role="button"], summary, label { touch-action: manipulation; }
 h1, h2, h3, p { margin: 0; }
