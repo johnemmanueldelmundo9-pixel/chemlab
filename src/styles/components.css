@@ -1,8 +1,8 @@
-/* ---------- Buttons ---------- */
+/* Buttons: squared-off instrument controls. */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 12px 22px; border-radius: 999px; border: 1px solid transparent;
-  font-weight: 650; text-decoration: none; line-height: 1.2;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  min-height: 44px; padding: var(--sp-3) var(--sp-5); border-radius: var(--radius-sm);
+  border: 1px solid transparent; font-weight: 650; text-decoration: none; line-height: 1.2;
   transition: transform .15s, box-shadow .15s, background .15s;
 }
 .btn:active { transform: translateY(1px); }
@@ -10,11 +10,11 @@
 .btn-primary:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
 .btn-ghost { background: var(--surface); border-color: var(--line); color: var(--ink); }
 .btn-ghost:hover { background: var(--surface-2); }
-.btn-sm { padding: 8px 16px; font-size: .92rem; }
+.btn-sm { min-height: 40px; padding: var(--sp-2) var(--sp-4); font-size: var(--fs-sm); }
 
 .icon-btn {
-  width: 40px; height: 40px; display: grid; place-items: center;
-  border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface);
 }
 .icon-btn:hover { background: var(--surface-2); }
 .icon-btn svg { width: 20px; height: 20px; }
@@ -22,50 +22,46 @@
 :root[data-theme="dark"] .theme-toggle .sun { display: none; }
 :root[data-theme="dark"] .theme-toggle .moon { display: block; }
 
-/* ---------- Chips / badges ---------- */
 .chip {
-  display: inline-block; padding: 4px 10px; border-radius: 999px;
+  display: inline-block; padding: var(--sp-1) var(--sp-3); border-radius: 6px;
   background: var(--surface-2); color: var(--ink-2);
-  font-size: .76rem; font-weight: 550; border: 1px solid var(--line);
+  font-size: var(--fs-xs); font-weight: 550; border: 1px solid var(--line);
 }
 .badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .1em;
-  padding: 4px 9px; border-radius: 6px; background: var(--brand-soft); color: var(--ink); font-weight: 650;
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  font-family: var(--font-sans); font-size: var(--fs-xs); letter-spacing: .02em;
+  padding: var(--sp-1) var(--sp-3); border-radius: 6px; background: var(--brand-soft); color: var(--ink); font-weight: 650;
 }
 .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
 .badge-soon { background: var(--surface-2); color: var(--ink-3); }
 .badge-soon::before { background: var(--ink-3); }
 
-/* ---------- Progress bar ---------- */
-.progress { height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
-.progress > i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--mod, var(--brand)); transition: width .4s ease; }
+.progress { height: 4px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.progress > i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--indicator); transition: width .4s ease; }
 
-/* ---------- Module card ----------
-   The big mono numeral is the chapter marker; the icon names the topic.
-   Both sit on the card's hue, so the grid reads as one periodic-table-ish set. */
+/* Module cards are instrument rows: a hue hairline, an icon, a title, a progress rule. No number badge. */
 .module-card {
-  --mod: oklch(0.58 0.15 var(--h));
-  --mod-ink: oklch(0.50 0.15 var(--h));
-  --mod-soft: oklch(0.95 0.035 var(--h));
-  position: relative; display: flex; flex-direction: column; gap: 16px;
-  padding: 24px; border-radius: var(--radius);
+  --mod: oklch(0.58 0.12 var(--h));
+  --mod-ink: oklch(0.48 0.12 var(--h));
+  --mod-soft: oklch(0.95 0.03 var(--h));
+  position: relative; display: flex; flex-direction: column; gap: var(--sp-4);
+  padding: var(--sp-5); border-radius: var(--radius-sm);
   background: var(--surface); border: 1px solid var(--line);
-  text-decoration: none; box-shadow: var(--shadow);
-  transition: transform .2s, box-shadow .2s, border-color .2s;
+  text-decoration: none; color: var(--ink);
+  transition: transform .2s, border-color .2s, background .2s;
 }
-:root[data-theme="dark"] .module-card { --mod: oklch(0.76 0.13 var(--h)); --mod-ink: oklch(0.76 0.13 var(--h)); --mod-soft: oklch(0.31 0.06 var(--h)); }
-.module-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--mod); }
-.module-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; border-radius: var(--radius) var(--radius) 0 0; background: var(--mod); }
-.mc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.mc-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--mod-soft); color: var(--mod-ink); }
+:root[data-theme="dark"] .module-card { --mod: oklch(0.76 0.11 var(--h)); --mod-ink: oklch(0.8 0.1 var(--h)); --mod-soft: oklch(0.31 0.05 var(--h)); }
+.module-card:hover { transform: translateY(-2px); border-color: var(--mod); background: var(--surface-2); }
+.module-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 2px; background: var(--indicator); }
+.mc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); }
+.mc-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); display: grid; place-items: center; background: var(--mod-soft); color: var(--mod-ink); }
 .mc-icon svg { width: 24px; height: 24px; }
-.mc-num { font-family: var(--font-mono); font-size: 2rem; font-weight: 700; line-height: .85; letter-spacing: -.08em; color: var(--mod-ink); }
+.mc-num { display: none; }
 .module-card h3 { font-size: var(--fs-h3); line-height: 1.25; }
-.module-card p { margin-top: 8px; color: var(--ink-2); font-size: .94rem; line-height: 1.55; }
-.mc-topics { display: flex; flex-wrap: wrap; gap: 6px; }
-.mc-topics .chip { font-size: .72rem; padding: 3px 9px; }
-.mc-foot { margin-top: auto; display: grid; gap: 10px; padding-top: 4px; }
-.mc-meta { display: flex; justify-content: space-between; align-items: center; font-size: .8rem; color: var(--ink-3); }
-.mc-features { display: flex; flex-wrap: wrap; gap: 4px 10px; font-family: var(--font-mono); font-size: .66rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
-.mc-features span + span::before { content: "·"; margin-right: 10px; color: var(--mod-ink); }
+.module-card p { margin-top: var(--sp-2); color: var(--ink-2); font-size: var(--fs-sm); line-height: 1.55; }
+.mc-topics { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.mc-topics .chip { font-size: var(--fs-xs); padding: 2px var(--sp-2); }
+.mc-foot { margin-top: auto; display: grid; gap: var(--sp-3); padding-top: var(--sp-1); }
+.mc-meta { display: flex; justify-content: space-between; align-items: center; font-size: var(--fs-sm); color: var(--ink-3); }
+.mc-features { display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-3); font-family: var(--font-sans); font-size: var(--fs-xs); letter-spacing: .02em; color: var(--ink-3); }
+.mc-features span + span::before { content: "·"; margin-right: var(--sp-3); color: var(--indicator); }

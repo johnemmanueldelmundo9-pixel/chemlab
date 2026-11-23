@@ -4,6 +4,7 @@
 import { LAB_WIDGETS } from './labWidgets.js';
 import { CALC_WIDGETS } from './calcWidgets.js';
 import { SOLVER_WIDGETS } from './solverWidgets.js';
+import { SIM_WIDGETS } from './simWidgets.js?v=3';
 
 const $ = (r, s) => r.querySelector(s);
 const shuffle = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
@@ -162,5 +163,5 @@ function quantum(h) {
   sel.addEventListener('input', run); run();
 }
 
-const WIDGETS = { ...LAB_WIDGETS, ...SOLVER_WIDGETS, ...CALC_WIDGETS, classify, darts, states, isotope, quantum };
+const WIDGETS = { ...LAB_WIDGETS, ...SOLVER_WIDGETS, ...CALC_WIDGETS, ...SIM_WIDGETS, classify, darts, states, isotope, quantum };
 export function mountWidget(name, host) { WIDGETS[name]?.(host); }

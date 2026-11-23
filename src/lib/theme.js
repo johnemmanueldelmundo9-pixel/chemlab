@@ -1,5 +1,5 @@
 const KEY = 'chemlab:theme';
-const BAR = { light: '#fbfaf6', dark: '#0a121c' };
+const BAR = { light: '#F5F7F6', dark: '#0D1F27' };
 
 export function currentTheme() {
   return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';

@@ -6,9 +6,10 @@ ChemLab is a free, static-first chemistry learning site: short lessons, interact
 
 ## What is in the site
 
-- **8 modules planned.** Modules 1 (lab safety) and 2 (basic concepts) are ready; the rest show as “Soon”.
+- **4 modules available.** Modules 1 (lab safety) and 2 (basic concepts) have lessons, simulations, calculators and quizzes. Modules 7 (thermochemistry & equilibrium) and 8 (electrochemistry) are calculator-led, with 9 and 5 step-by-step solvers.
 - **Module 1:** lab conduct, 5S housekeeping, glassware, chemical handling and storage, GHS, PPE, waste, first aid and spills, with Wikimedia Commons photographs.
 - **Module 2 calculators:** significant figures, scientific notation, unit conversion, density/temperature/percent error, molar mass and moles. Every calculator shows the formula, the substitution, the steps, the units and the significant figures.
+- **Modules 7 and 8 calculators:** heat and calorimetry, Hess’s law, Gibbs energy, Q vs K, ICE tables, Le Chatelier; oxidation numbers, redox balancing, cell potential, Nernst and Faraday’s law.
 - **Periodic table:** all 118 elements with details, keyboard navigation and colour modes.
 - **Optional accounts:** Supabase email/password auth and cross-device progress sync. The site works fully without an account.
 - **ChemBot:** an AI tutor served by a Vercel function, with chemistry-only rules and a per-IP rate limit.

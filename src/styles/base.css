@@ -9,8 +9,10 @@ body {
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+  display: flex;
+  flex-direction: column;
 }
-/* No 300ms double-tap delay on phones; pinch-zoom and scrolling still work. */
+#app { flex: 1; min-width: 0; }
 a, button, [role="button"], summary, label { touch-action: manipulation; }
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
@@ -27,17 +29,17 @@ svg { display: block; }
   transition: top .15s;
 }
 .skip-link:focus { top: 12px; }
-
 .visually-hidden, .sr-only {
   position: absolute !important; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* Everything calms down for people who prefer reduced motion, EXCEPT the hero atom (.atom-stage),
-     which the site owner wants to keep moving: slow orbits and gently floating formulas. */
+  /* The hero atom keeps animating by the lead's instruction; everything else calms down. */
   *:not(.atom-stage, .atom-stage *),
   *:not(.atom-stage, .atom-stage *)::before,
-  *:not(.atom-stage, .atom-stage *)::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  *:not(.atom-stage, .atom-stage *)::after {
+    animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important;
+  }
   html { scroll-behavior: auto; }
 }

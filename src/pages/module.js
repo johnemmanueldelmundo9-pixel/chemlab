@@ -20,7 +20,7 @@ function parts(m) {
     { key: 'sims', title: 'Simulations', icon: 'sliders', blurb: 'Change a setting and watch the chemistry respond.', items: named(o.sims, p.sims, 'Simulation', 'sim') },
     { key: 'calcs', title: 'Calculators', icon: 'calc', blurb: 'Step-by-step working for the maths in this module.', items: named(o.calcs, p.calcs, 'Calculator', 'calc') },
     { key: 'quiz', title: 'Quiz', icon: 'check', blurb: 'Instant feedback, with a review of anything you miss.', items: [{ id: 'quiz', name: 'Module quiz' }] },
-  ].filter((s) => s.items.length);
+  ].filter((s) => s.items.length && !(m.noQuiz && s.key === 'quiz'));
 }
 
 // An item opens only when the module is ready and its content exists.
@@ -82,7 +82,7 @@ export function renderModule(el, id) {
         <a class="back" href="#/modules">\u2190 All modules</a>
         <div class="mod-hero-grid">
           <div class="mod-hero-text">
-            <p class="eyebrow">Module ${String(m.num).padStart(2, '0')}</p>
+            <p class="eyebrow">Course module</p>
             <h1>${m.title}</h1>
             <p class="mod-lead">${m.blurb}</p>
             <div class="mod-topics" aria-label="Topics">${m.topics.map((t) => `<span class="chip">${t}</span>`).join('')}</div>
@@ -173,7 +173,7 @@ export function renderModule(el, id) {
     }).join('');
     return `<aside class="rd-rail" aria-label="Contents of ${m.title}">
       <button type="button" class="rd-rail-back" data-back>\u2190 Module overview</button>
-      <p class="eyebrow">Module ${String(m.num).padStart(2, '0')}</p>
+      <p class="eyebrow">Course module</p>
       <p class="rd-rail-title">${m.title}</p>
       <div class="rd-rail-prog">
         <div class="progress" role="progressbar" aria-label="${m.title} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p.pct}"><i style="width:${p.pct}%"></i></div>

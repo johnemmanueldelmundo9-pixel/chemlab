@@ -15,10 +15,9 @@ export function moduleCard(m) {
     <a class="module-card" href="#/module/${m.id}" style="--h:${m.hue}">
       <div class="mc-top">
         <span class="mc-icon">${icon(m.icon)}</span>
-        <span class="mc-num" aria-hidden="true">${String(m.num).padStart(2, '0')}</span>
       </div>
       <div>
-        <h3><span class="sr-only">Module ${m.num}: </span>${m.title}</h3>
+        <h3>${m.title}</h3>
         <p>${m.blurb}</p>
       </div>
       <div class="mc-topics">${m.topics.map((t) => `<span class="chip">${t}</span>`).join('')}</div>
