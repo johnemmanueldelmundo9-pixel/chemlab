@@ -12,6 +12,11 @@ const ERRORS = {
   not_configured: "ChemBot isn't switched on yet. Please try again later.",
   busy: 'ChemBot is busy right now. Give it a minute and ask again.',
   rate_limited: "You've asked a lot of questions in a short time. Take a short break and try again in a few minutes.",
+  upstream_429: 'Rate limit reached — wait a few seconds and click Try again.',
+  upstream_503: 'ChemBot is temporarily overloaded. Wait a moment and try again.',
+  upstream_timeout: 'Request timed out. Try again with a shorter question.',
+  upstream: 'The AI service did not return an answer. Please try again.',
+  upstream_unreachable: "Couldn't reach ChemBot. Check your connection and try again.",
   network: "Couldn't reach ChemBot. Check your connection and try again.",
   other: 'Something went wrong. Please try again.',
 };
@@ -144,7 +149,12 @@ export function mountChat(app) {
       if (!res.ok) {
         let code = 'other';
         try { code = (await res.json()).error; } catch { /* not JSON */ }
-        failed = res.status === 404 ? 'not_configured' : res.status === 429 ? (code === 'rate_limited' ? 'rate_limited' : 'busy') : res.status === 503 ? 'not_configured' : 'other';
+        failed = ERRORS[code] ? code
+          : res.status === 404 ? 'not_configured'
+          : res.status === 429 ? 'upstream_429'
+          : res.status === 503 ? 'upstream_503'
+          : res.status === 504 ? 'upstream_timeout'
+          : 'other';
       } else {
         const reader = res.body.getReader();
         const decoder = new TextDecoder();

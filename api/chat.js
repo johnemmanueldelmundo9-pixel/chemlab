@@ -13,6 +13,10 @@
 
 const GEMINI_DEFAULT_MODELS = ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-3.1-flash-lite'];
 const list = (name, fallback) => (process.env[name] ? process.env[name].split(',').map((s) => s.trim()).filter(Boolean) : fallback);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Vercel Hobby functions are limited to 10s unless maxDuration is set in vercel.json.
+// Keep output short so a reply finishes well before that limit.
+const MAX_OUTPUT_TOKENS = 700;
 
 // Each provider says how to build its request and how to read a streamed chunk.
 const PROVIDERS = {
@@ -26,7 +30,7 @@ const PROVIDERS = {
         body: JSON.stringify({
           model,
           messages: [{ role: 'system', content: system }, ...messages.map((m) => ({ role: m.role, content: m.content }))],
-          stream: true, temperature: 0.4, max_tokens: 1000,
+          stream: true, temperature: 0.4, max_tokens: MAX_OUTPUT_TOKENS,
         }),
       };
     },
@@ -46,7 +50,7 @@ const PROVIDERS = {
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: system }] },
           contents: messages.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
-          generationConfig: { temperature: 0.4, maxOutputTokens: 1500 },
+          generationConfig: { temperature: 0.4, maxOutputTokens: MAX_OUTPUT_TOKENS },
         }),
       };
     },
@@ -62,10 +66,10 @@ function activeProviders() {
 }
 
 const MODULES = {
-  'intro-lab-safety': ['Module 1', 'Introduction to Chemistry & Lab Safety', 'why engineers need chemistry, lab conduct and housekeeping, glassware and equipment, handling and storing chemicals, personal protective equipment (PPE), waste disposal, first aid and spill response'],
-  'basic-concepts': ['Module 2', 'Basic Chemical Concepts', 'classification of matter and mixtures, states and properties of matter, physical and chemical changes, SI units and prefixes, significant figures and scientific notation, precision and accuracy, dimensional analysis (factor-label method), Avogadro\'s number, the mole and molar mass'],
-  'thermo-equilibrium': ['Module 7', 'Thermochemistry & Equilibrium', 'energy and enthalpy, calorimetry, Hess\'s law, chemical equilibrium, the equilibrium constant and Le Chatelier\'s principle'],
-  'electrochemistry': ['Module 8', 'Electrochemistry', 'oxidation numbers, redox reactions and half-reactions, galvanic and electrolytic cells, standard cell potentials, the Nernst equation and batteries'],
+  'intro-lab-safety': ['Module 01', 'Intro & Lab Safety', 'why engineers need chemistry, lab conduct and housekeeping, glassware and equipment, handling and storing chemicals, personal protective equipment (PPE), waste disposal, first aid and spill response'],
+  'basic-concepts': ['Module 02', 'Basic Chemical Concepts', 'classification of matter and mixtures, states and properties of matter, physical and chemical changes, SI units and prefixes, significant figures and scientific notation, precision and accuracy, dimensional analysis (factor-label method), Avogadro\'s number, the mole and molar mass'],
+  'thermo-equilibrium': ['Module 03', 'Thermochemistry & Equilibrium', 'energy and enthalpy, calorimetry, Hess\'s law, chemical equilibrium, the equilibrium constant and Le Chatelier\'s principle'],
+  'electrochemistry': ['Module 04', 'Electrochemistry', 'oxidation numbers, redox reactions and half-reactions, galvanic and electrolytic cells, standard cell potentials, the Nernst equation and batteries'],
 };
 const PAGES = {
   'home': 'the ChemLab home page (no module open)',
@@ -102,7 +106,7 @@ The student is on: ${page}.
 ${focus}
 - Focus on this page's topics first, using its vocabulary and level.
 - If the question is chemistry but belongs to another ChemLab module, answer briefly (2 to 4 sentences) and say which module covers it in depth. ChemLab modules: ${list}.
-- If it is chemistry but outside all eight modules (for example acids and bases, kinetics, organic chemistry), answer briefly and say it is not a ChemLab module yet.
+- If it is chemistry but outside all four modules (for example acids and bases, kinetics, organic chemistry), answer briefly and say it is not a ChemLab module yet.
 
 STYLE
 - Be warm, clear and step by step. Keep answers under about 150 words unless the student asks for more, and never go beyond about 250 words.
@@ -144,18 +148,23 @@ function send(res, status, error) {
   res.end(JSON.stringify({ error }));
 }
 
+// Accept legacy/alternate role names and normalise to user / assistant before
+// either provider sees them. Gemini maps assistant -> model in its own request builder.
+const ROLE_ALIASES = { user: 'user', human: 'user', assistant: 'assistant', bot: 'assistant', model: 'assistant' };
 function cleanMessages(raw) {
   if (!Array.isArray(raw)) return null;
   const out = [];
   let total = 0;
   for (const m of raw.slice(-MAX_MESSAGES)) {
-    if (!m || (m.role !== 'user' && m.role !== 'assistant') || typeof m.content !== 'string') return null;
+    if (!m) return null;
+    const role = ROLE_ALIASES[String(m.role || '').toLowerCase()];
+    if (!role || typeof m.content !== 'string') return null;
     const content = m.content.trim().slice(0, MAX_CHARS_EACH);
     if (!content) continue;
     total += content.length;
     const last = out[out.length - 1];
-    if (last && last.role === m.role) last.content += '\n' + content; // keep strict user/model turns
-    else out.push({ role: m.role, content });
+    if (last && last.role === role) last.content += '\n' + content; // keep strict user/model turns
+    else out.push({ role, content });
   }
   while (out.length && out[0].role !== 'user') out.shift();
   if (!out.length || out[out.length - 1].role !== 'user' || total > MAX_CHARS_TOTAL) return null;
@@ -184,51 +193,72 @@ async function handler(req, res) {
   if (limited(clientIp(req))) return send(res, 429, 'rate_limited');
 
   const system = systemPrompt(moduleId, topic);
-  let busy = false;
+  let lastStatus = 0;
   for (const name of providers) {
     const provider = PROVIDERS[name];
     const key = process.env[provider.keyEnv];
     for (const model of provider.models()) {
-      const r = provider.request(model, key, system, messages);
-      let upstream;
-      try { upstream = await fetch(r.url, { method: 'POST', headers: r.headers, body: r.body }); } catch (e) { console.error(name, model, 'network error'); continue; }
-      if (!upstream.ok) {
-        let detail = '';
-        try { detail = (await upstream.text()).replace(/\s+/g, ' ').slice(0, 300); } catch { /* ignore */ }
-        console.error(`${name} ${model} -> ${upstream.status} ${detail}`);
-        if (upstream.status === 429 || upstream.status === 402) busy = true; // out of quota or balance
-        continue; // try the next model, then the next provider
-      }
-
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-      res.setHeader('Cache-Control', 'no-store');
-      res.setHeader('X-Accel-Buffering', 'no');
-      let wrote = false;
-      let buf = '';
-      const handleLine = (line) => {
-        if (!line.startsWith('data:')) return;
-        const data = line.slice(5).trim();
-        if (!data || data === '[DONE]') return;
-        let obj;
-        try { obj = JSON.parse(data); } catch { return; }
-        for (const t of provider.texts(obj)) { res.write(t); wrote = true; }
-      };
-      try {
-        const decoder = new TextDecoder();
-        for await (const chunk of upstream.body) {
-          buf += decoder.decode(chunk, { stream: true });
-          let i;
-          while ((i = buf.indexOf('\n')) >= 0) { handleLine(buf.slice(0, i).trim()); buf = buf.slice(i + 1); }
+      // Retry a transient failure once after a short backoff, then fall through
+      // to the next model and finally the other provider.
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const r = provider.request(model, key, system, messages);
+        let upstream;
+        try { upstream = await fetch(r.url, { method: 'POST', headers: r.headers, body: r.body }); }
+        catch (e) { console.error(name, model, 'network error', e && e.message); lastStatus = 0; break; }
+        if (!upstream.ok) {
+          const status = upstream.status;
+          let detail = '';
+          try { detail = (await upstream.text()).replace(/\s+/g, ' ').slice(0, 300); } catch { /* ignore */ }
+          console.error(`${name} ${model} -> ${status} ${detail}`); // log upstream status server-side
+          lastStatus = status;
+          if ((status === 429 || status === 503 || status === 504) && attempt === 0) {
+            await sleep(300);
+            continue;
+          }
+          break; // next model, then next provider
         }
-        handleLine(buf.trim());
-      } catch (e) { console.error('stream error', e && e.message); }
-      if (!wrote) res.write("I couldn't put together an answer for that one. Try asking your chemistry question in a different way.");
-      return res.end();
+
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-store');
+        res.setHeader('X-Accel-Buffering', 'no');
+        res.flushHeaders?.(); // start the stream immediately
+        let wrote = false;
+        let buf = '';
+        const handleLine = (line) => {
+          if (!line.startsWith('data:')) return;
+          const data = line.slice(5).trim();
+          if (!data || data === '[DONE]') return;
+          let obj;
+          try { obj = JSON.parse(data); } catch { return; }
+          for (const t of provider.texts(obj)) { res.write(t); wrote = true; }
+        };
+        try {
+          const decoder = new TextDecoder();
+          for await (const chunk of upstream.body) {
+            buf += decoder.decode(chunk, { stream: true });
+            let i;
+            while ((i = buf.indexOf('\n')) >= 0) { handleLine(buf.slice(0, i).trim()); buf = buf.slice(i + 1); }
+          }
+          handleLine(buf.trim());
+        } catch (e) { console.error('stream error', e && e.message); }
+        if (!wrote) res.write("I couldn't put together an answer for that one. Try asking your chemistry question in a different way.");
+        return res.end();
+      }
     }
   }
-  return send(res, busy ? 429 : 502, busy ? 'busy' : 'upstream');
+  if (lastStatus === 429 || lastStatus === 402) return send(res, 429, 'upstream_429');
+  if (lastStatus === 503) return send(res, 503, 'upstream_503');
+  if (lastStatus === 504) return send(res, 504, 'upstream_timeout');
+  return send(res, 502, lastStatus ? 'upstream' : 'upstream_unreachable');
 }
 
 module.exports = handler;
-module.exports._test = { systemPrompt, cleanMessages, hits, activeProviders };
+module.exports.maxDuration = 30; // Vercel function timeout (mirrors vercel.json)
+module.exports._test = {
+  systemPrompt,
+  cleanMessages,
+  hits,
+  activeProviders,
+  requestFor: (name, model, key, system, messages) => PROVIDERS[name].request(model, key, system, messages),
+};
