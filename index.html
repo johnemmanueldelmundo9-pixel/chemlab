@@ -14,10 +14,9 @@
   <script>
     // Apply saved/system theme before first paint to avoid a flash.
     try {
-      var t = localStorage.getItem('chemlab:theme');
-      if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      document.documentElement.dataset.theme = t;
-      document.getElementById('theme-color').content = t === 'dark' ? '#0D1F27' : '#F5F7F6';
+      // Cream-paper ledger only: ignore saved or system dark preference.
+      document.documentElement.dataset.theme = 'light';
+      document.getElementById('theme-color').content = '#FBF7EF';
     } catch (e) { document.documentElement.dataset.theme = 'light'; }
   </script>
   <link rel="stylesheet" href="src/styles/tokens.css">
@@ -30,6 +29,7 @@
   <link rel="stylesheet" href="src/styles/auth.css">
   <link rel="stylesheet" href="src/styles/periodic.css">
   <link rel="stylesheet" href="src/styles/chat.css">
+  <link rel="stylesheet" href="reskin.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
