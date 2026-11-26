@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 460" role="img" aria-labelledby="title-safety-goggles"><title id="title-safety-goggles">Safety goggles — layered laboratory paper-doll asset</title><g class="ppe-layer" stroke="#231f20" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M104 58 Q140 50 176 58 L178 82 Q140 92 102 82 Z" fill="rgba(140, 215, 230, 0.55)"/>
+      <path d="M104 58 L94 60 v18 l10 -2 M176 58 l10 2 v18 l-10 -2" fill="#ffffff"/>
+      <path d="M94 62 h-18 M184 62 h18" stroke="#111111" stroke-width="4" fill="none"/>
+      <path d="M114 68 h18 M148 68 h18" stroke="#ffffff" stroke-width="2" fill="none"/>
+    </g></svg>

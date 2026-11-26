@@ -1,0 +1,184 @@
+{
+  "course": "Chemistry for Engineers",
+  "version": "2.0.0",
+  "modules": [
+    {
+      "id": "intro-lab-safety",
+      "title": "Introduction to Chemistry & Lab Safety",
+      "lessons": [
+        "Why chemistry matters for engineers",
+        "Lab conduct, housekeeping and hygiene",
+        "Glassware, equipment and tools",
+        "Handling, storing and labelling chemicals",
+        "Personal protective equipment (PPE)",
+        "Waste disposal, first aid and spills"
+      ],
+      "key_rules": [
+        "Always add concentrated acid to water (AAA), never water to acid.",
+        "Wear splash goggles, buttoned full-length lab coat, chemical-resistant gloves, long pants, and closed-toe shoes.",
+        "Tie back long hair and remove dangling jewelry and synthetic fingernails before lab work.",
+        "Segregate acids, bases, organic solvents, heavy-metal inorganics, and neutral salts."
+      ],
+      "practice_questions": [
+        {
+          "q": "Which GHS pictogram shows a flame over a circle and warns that a chemical can intensify fires?",
+          "options": [
+            "Oxidizer",
+            "Flammable",
+            "Explosive",
+            "Corrosive"
+          ],
+          "answer": "Oxidizer"
+        },
+        {
+          "q": "Why must sulfuric acid waste never be poured into a sodium hydroxide waste carboy?",
+          "options": [
+            "Violent exothermic neutralization can boil and splatter corrosive liquid",
+            "It forms a harmless precipitate",
+            "It turns into an organic solvent",
+            "It lowers the pH to neutral without heat"
+          ],
+          "answer": "Violent exothermic neutralization can boil and splatter corrosive liquid"
+        }
+      ]
+    },
+    {
+      "id": "basic-chemical-concepts",
+      "title": "Basic Chemical Concepts",
+      "lessons": [
+        "Classifying matter",
+        "States, properties and changes of matter",
+        "Measurement and SI units",
+        "Significant figures and rounding",
+        "Scientific notation, accuracy and precision",
+        "Dimensional analysis",
+        "The mole and molar mass"
+      ],
+      "key_rules": [
+        "Elements contain one atom type; compounds have fixed ratios of chemically bonded atoms; mixtures are physically separable blends.",
+        "Multiply/divide: round to fewest sig figs. Add/subtract: round to fewest decimal places.",
+        "1 mol = 6.022e23 particles; M = n / V(L); C1*V1 = C2*V2."
+      ],
+      "practice_questions": [
+        {
+          "q": "How do you distinguish a compound from a mixture at the particle level?",
+          "options": [
+            "A compound has different atoms chemically bonded in a fixed ratio; a mixture has unbonded substances blended together",
+            "A compound can be separated by filtration; a mixture cannot",
+            "A mixture has only one type of atom",
+            "Compounds always exist as gases"
+          ],
+          "answer": "A compound has different atoms chemically bonded in a fixed ratio; a mixture has unbonded substances blended together"
+        },
+        {
+          "q": "Calculate the product 4.20 cm \u00d7 2.1 cm using proper significant figures.",
+          "options": [
+            "8.8 cm\u00b2",
+            "8.82 cm\u00b2",
+            "9 cm\u00b2",
+            "8.820 cm\u00b2"
+          ],
+          "answer": "8.8 cm\u00b2"
+        }
+      ]
+    },
+    {
+      "id": "thermochemistry-equilibrium",
+      "title": "Thermochemistry & Equilibrium",
+      "lessons": [
+        "Systems, surroundings, state functions and the First Law",
+        "Heat transfer, pressure-volume work and calorimetry",
+        "Enthalpy, thermochemical equations and Hess's law",
+        "Bond energies and reaction enthalpy estimation",
+        "Dynamic chemical equilibrium, Q vs. K and Le Chatelier's principle"
+      ],
+      "key_rules": [
+        "deltaU = q + w; q > 0 when heat is absorbed, w = -P*deltaV (1 L\u00b7atm = 101.3 J; expansion w < 0, compression w > 0).",
+        "q = m*c*deltaT; in coffee-cup calorimetry, q_reaction = -q_solution.",
+        "Reversing a thermochemical equation changes the sign of deltaH; multiplying scales deltaH by the same factor.",
+        "deltaH \u2248 sum(E_broken) - sum(E_formed); pure solids and liquids are omitted from equilibrium constant K."
+      ],
+      "practice_questions": [
+        {
+          "q": "A system absorbs 560 J of heat and does 150 J of work on the surroundings. What is \u0394U?",
+          "options": [
+            "+410 J",
+            "+710 J",
+            "-410 J",
+            "-710 J"
+          ],
+          "answer": "+410 J"
+        },
+        {
+          "q": "A gas is compressed from 8.0 L to 3.5 L against 1.20 atm (1 L\u00b7atm = 101.3 J). How much work is done?",
+          "options": [
+            "+547 J",
+            "-547 J",
+            "+5.4 J",
+            "-456 J"
+          ],
+          "answer": "+547 J"
+        },
+        {
+          "q": "Given C + O2 -> CO2 (\u0394H = -394 kJ) and CO + 0.5 O2 -> CO2 (\u0394H = -283 kJ), what is \u0394H for C + 0.5 O2 -> CO?",
+          "options": [
+            "-111 kJ",
+            "-677 kJ",
+            "+111 kJ",
+            "+677 kJ"
+          ],
+          "answer": "-111 kJ"
+        },
+        {
+          "q": "For an exothermic equilibrium reaction, what happens when temperature is increased?",
+          "options": [
+            "Equilibrium shifts left toward reactants and K decreases",
+            "Equilibrium shifts right toward products and K increases",
+            "No shift occurs",
+            "Only the catalyst changes K"
+          ],
+          "answer": "Equilibrium shifts left toward reactants and K decreases"
+        }
+      ]
+    },
+    {
+      "id": "electrochemistry",
+      "title": "Electrochemistry",
+      "lessons": [
+        "Redox reactions and oxidation numbers",
+        "Balancing redox equations in acidic solution",
+        "Balancing redox equations in basic solution",
+        "Galvanic vs. electrolytic cells and salt bridges",
+        "Standard reduction potentials and cell voltage",
+        "Cell potential, Gibbs free energy and electrolysis"
+      ],
+      "key_rules": [
+        "OIL RIG: Oxidation Is Loss of electrons (at anode); Reduction Is Gain of electrons (at cathode).",
+        "E\u00b0cell = E\u00b0cathode - E\u00b0anode; never multiply E\u00b0red by stoichiometric coefficients.",
+        "deltaG\u00b0 = -n * F * E\u00b0cell (F = 96,485 C/mol); positive E\u00b0cell means spontaneous forward reaction."
+      ],
+      "practice_questions": [
+        {
+          "q": "Given E\u00b0(Ag+/Ag) = +0.80 V and E\u00b0(Cu2+/Cu) = +0.34 V, what is E\u00b0cell for Cu + 2Ag+ -> Cu2+ + 2Ag?",
+          "options": [
+            "+0.46 V",
+            "+1.26 V",
+            "+1.14 V",
+            "-0.46 V"
+          ],
+          "answer": "+0.46 V"
+        },
+        {
+          "q": "In a galvanic cell, which way do anions in the salt bridge migrate?",
+          "options": [
+            "Toward the anode compartment to balance positive ion buildup",
+            "Toward the cathode compartment",
+            "Through the external metal wire",
+            "They remain stationary"
+          ],
+          "answer": "Toward the anode compartment to balance positive ion buildup"
+        }
+      ]
+    }
+  ]
+}

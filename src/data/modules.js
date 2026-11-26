@@ -32,12 +32,18 @@ export const MODULES = [
     icon: 'flask',
   },
   {
-    id: 'thermo-equilibrium', num: 7, hue: 55, status: 'ready', noQuiz: true,
+    id: 'thermo-equilibrium', num: 7, hue: 55, status: 'ready',
     title: 'Thermochemistry & Equilibrium',
     blurb: 'Energy changes in reactions and how systems settle at balance.',
     topics: ['Enthalpy & Hess', 'Calorimetry', 'Le Chatelier'],
     outline: {
-      lessons: [],
+      lessons: [
+        'Systems, surroundings, state functions and the First Law',
+        'Heat transfer, pressure-volume work and calorimetry',
+        'Enthalpy, thermochemical equations and Hess’s law',
+        'Bond energies and reaction enthalpy estimation',
+        'Dynamic chemical equilibrium, Q vs. K and Le Chatelier’s principle',
+      ],
       sims: ['Heat flow', 'Le Chatelier'],
       calcs: [
         'Heat and temperature change', 'Calorimetry', 'Heating curve of water',
@@ -46,23 +52,30 @@ export const MODULES = [
         'ICE table solver', 'Le Chatelier’s principle',
       ],
     },
-    plan: { lessons: 0, sims: 2, calcs: 9 },
+    plan: { lessons: 5, sims: 2, calcs: 9 },
     icon: 'flame',
   },
   {
-    id: 'electrochemistry', num: 8, hue: 135, status: 'ready', noQuiz: true,
+    id: 'electrochemistry', num: 8, hue: 135, status: 'ready',
     title: 'Electrochemistry',
     blurb: 'Redox reactions, batteries and the electricity of chemistry.',
     topics: ['Redox', 'Galvanic cells', 'Nernst equation'],
     outline: {
-      lessons: [],
-      sims: ['Heat flow', 'Le Chatelier'],
+      lessons: [
+        'Redox reactions and oxidation numbers',
+        'Balancing redox equations in acidic solution',
+        'Balancing redox equations in basic solution',
+        'Galvanic vs. electrolytic cells and salt bridges',
+        'Standard reduction potentials and cell voltage',
+        'Cell potential, Gibbs free energy and electrolysis',
+      ],
+      sims: ['Galvanic cell', 'Electrolysis'],
       calcs: [
         'Oxidation numbers', 'Redox equation balancer', 'Cell potential, ΔG° and K',
         'Nernst equation', 'Electrolysis (Faraday’s law)',
       ],
     },
-    plan: { lessons: 0, sims: 2, calcs: 5 },
+    plan: { lessons: 6, sims: 2, calcs: 5 },
     icon: 'bolt',
   },
 ];

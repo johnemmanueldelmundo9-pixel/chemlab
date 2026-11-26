@@ -12,7 +12,7 @@ export function moduleCard(m) {
     'quiz',
   ].filter(Boolean);
   return `
-    <a class="module-card" href="#/module/${m.id}" style="--h:${m.hue}">
+    <a class="module-card" href="#/module/${m.id}${m.plan.lessons ? '?item=lesson-1' : m.plan.sims ? '?item=sim-1' : ''}" style="--h:${m.hue}">
       <div class="mc-top">
         <span class="mc-icon">${icon(m.icon)}</span>
       </div>

@@ -7,6 +7,8 @@ import { icon } from '../lib/icons.js';
 import { getAll, markDone, moduleProgress } from '../lib/progress.js';
 import { mountWidget } from '../lib/widgets.js';
 import { setTopic } from '../lib/chatContext.js';
+import { lessonSwitcher, lessonNav, startQuizBar, lessonVisuals } from './lesson.js';
+import { ghsSvg } from '../assets/ghsAssets.js';
 
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const named = (list, n, label, prefix) =>
@@ -31,10 +33,11 @@ const has = (m, id) => {
   if (id.startsWith('lesson-')) return !!c.lessons?.[+id.slice(7) - 1];
   return !!c.tools?.[id];
 };
+const firstItem = (m) => (m.plan.lessons ? 'lesson-1' : m.plan.sims ? 'sim-1' : m.plan.calcs ? 'calc-1' : 'quiz');
 
 const check = (q, label = 'Quick check') => `
   <div class="chk" data-ans="${q.answer}">
-    <p class="chk-q"><strong>${label}.</strong> ${q.q}</p>
+    <p class="chk-q"><strong>${label}.</strong> ${q.ghs !== undefined ? `<span class="chk-ghs">${ghsSvg(q.ghs)}</span>` : ''}${q.q}</p>
     <div class="chk-opts">${q.options.map((o, i) => `<button type="button" data-i="${i}">${o}</button>`).join('')}</div>
     <p class="chk-why" role="status" aria-live="polite" hidden>${q.why}</p>
   </div>`;
@@ -56,11 +59,13 @@ function block([t, a, b, c]) {
   }
 }
 
-export function renderModule(el, id) {
+export function renderModule(el, id, openItem) {
   const m = getModule(id);
   if (!m) return renderNotFound(el);
   const c = CONTENT[m.id] || {};
-  let view = null; // null = hub, otherwise { id, pushed, quiz state }
+  // No overview screen: a bare #/module/<id> always opens the first real item.
+  const target = openItem && has(m, openItem) ? openItem : firstItem(m);
+  let view = null;
   const allItems = () => parts(m).flatMap((s) => s.items);
   const doneSet = () => new Set(getAll()[m.id] || []);
   const nextItem = () => { const d = doneSet(); return allItems().find((it) => has(m, it.id) && !d.has(it.id)); };
@@ -147,7 +152,7 @@ export function renderModule(el, id) {
       const review = view.wrong.length ? `<h2>Review your mistakes</h2>${view.wrong.map((w) => `
         <div class="rev"><p class="rev-q">${w.q}</p><p>Your answer: <span class="rev-bad">${w.picked}</span><br>Correct answer: <span class="rev-ok">${w.correct}</span></p><p>${w.why}</p></div>`).join('')}` : '<p>No mistakes. Perfect score!</p>';
       return `<div class="note"><p><strong>${view.score} of ${qs.length} correct (${pct}%).</strong> ${pass ? 'Quiz complete: it now counts toward your progress.' : 'Score 70% or more to complete the quiz. Review the answers below, revisit the lessons and try again.'}</p></div>${review}
-        <div class="rd-actions"><button type="button" class="btn btn-ghost" data-retry>Try again</button><button type="button" class="btn btn-primary" data-back>Back to module</button></div>`;
+        <div class="rd-actions"><button type="button" class="btn btn-ghost" data-retry>Try again</button><a class="btn btn-primary" href="#/">Back to home</a></div>`;
     }
     return `<p class="wd-label">Question ${view.i + 1} of ${qs.length}</p>
       <div class="progress rd-prog" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="${qs.length}" aria-valuenow="${view.i}"><i style="width:${(view.i / qs.length) * 100}%"></i></div>
@@ -166,13 +171,13 @@ export function renderModule(el, id) {
           : '';
         const n = `<span class="ri-n">${String(i + 1).padStart(2, '0')}</span>`;
         return open
-          ? `<li><button type="button" class="rd-rail-item" data-open="${it.id}"${cur ? ' aria-current="page"' : ''}>${n}<span class="ri-name">${it.name}</span>${tick}</button></li>`
+          ? `<li><a class="rd-rail-item" href="#/module/${m.id}?item=${it.id}"${cur ? ' aria-current="page"' : ''}>${n}<span class="ri-name">${it.name}</span>${tick}</a></li>`
           : `<li><span class="rd-rail-item is-soon">${n}<span class="ri-name">${it.name}</span><span class="ri-soon">Soon</span></span></li>`;
       }).join('');
       return `<p class="rd-rail-group">${s.title}</p><ul class="rd-rail-list">${rows}</ul>`;
     }).join('');
     return `<aside class="rd-rail" aria-label="Contents of ${m.title}">
-      <button type="button" class="rd-rail-back" data-back>\u2190 Module overview</button>
+      <a class="rd-rail-back" href="#/">\u2190 All modules</a>
       <p class="eyebrow">Course module</p>
       <p class="rd-rail-title">${m.title}</p>
       <div class="rd-rail-prog">
@@ -189,15 +194,23 @@ export function renderModule(el, id) {
     const idx = isQuiz ? '' : ` ${itemId.split('-')[1]} of ${m.plan[itemId.startsWith('lesson') ? 'lessons' : itemId.startsWith('sim') ? 'sims' : 'calcs']}`;
     let body = '', title = item.name, mins = 0;
     if (itemId.startsWith('lesson-')) {
-      const L = c.lessons[+itemId.slice(7) - 1]; title = L.title;
+      const li = +itemId.slice(7) - 1;
+      const L = c.lessons[li]; title = L.title;
       const words = L.blocks.map((b) => b.slice(1).map((x) => (typeof x === 'string' ? x : JSON.stringify(x))).join(' ')).join(' ').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
       mins = Math.max(1, Math.round(words / 200));
-      body = L.blocks.map(block).join('') + `<div class="rd-actions"><button type="button" class="btn btn-primary" data-finish="${itemId}">Mark complete and continue</button><button type="button" class="btn btn-ghost" data-back>Back to module</button></div>`;
+      const hasImg = L.blocks.some((b) => b[0] === 'img');
+      const canQuiz = !m.noQuiz && !!c.quiz?.length;
+      body = lessonSwitcher(m, li)
+        + (hasImg ? '' : lessonVisuals(m, li))
+        + L.blocks.map(block).join('')
+        + startQuizBar(m, canQuiz)
+        + lessonNav(m, li)
+        + `<div class="rd-actions"><button type="button" class="btn btn-primary" data-finish="${itemId}">Mark complete and continue</button><a class="btn btn-ghost" href="#/">Back to home</a></div>`;
     } else if (isQuiz) {
       body = quizBody();
     } else {
       const t = c.tools[itemId]; title = t.title;
-      body = `<p>${t.intro}</p><div class="wd" data-w="${t.widget}"></div><div class="rd-actions"><button type="button" class="btn btn-primary" data-finish="${itemId}">Mark as done</button><button type="button" class="btn btn-ghost" data-back>Back to module</button></div>`;
+      body = `<p>${t.intro}</p><div class="wd" data-w="${t.widget}"></div><div class="rd-actions"><button type="button" class="btn btn-primary" data-finish="${itemId}">Mark as done</button><a class="btn btn-ghost" href="#/">Back to home</a></div>`;
     }
     const meta = [`${kind}${idx}`].concat(mins ? [`${mins} min read`] : []).map((x) => `<span>${x}</span>`).join(' <span class="rd-meta-sep">\u00b7</span> ');
     el.innerHTML = `
@@ -205,10 +218,16 @@ export function renderModule(el, id) {
       <div class="container rd-shell">
         ${rail(itemId)}
         <article class="rd rd-main">
-          <button type="button" class="rd-back" data-back>\u2190 ${m.title}</button>
+          <a class="rd-back" href="#/">\u2190 All modules</a>
           <p class="eyebrow rd-meta">${meta}</p>
           <h1 tabindex="-1">${title}</h1>
           ${body}
+          ${c.reference ? `<details class="ref"><summary>Quick reference: key terms and formulas</summary>
+            <div class="ref-grid">
+              <dl>${(c.reference.terms || []).map(([t, d]) => `<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl>
+              <div class="tbl"><table><thead><tr><th scope="col">${c.reference.head?.[0] || 'Formula'}</th><th scope="col">${c.reference.head?.[1] || 'Rule'}</th></tr></thead><tbody>${(c.reference.formulas || []).map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</tbody></table></div>
+            </div>
+          </details>` : ''}
         </article>
       </div>
     </div>`;
@@ -216,7 +235,7 @@ export function renderModule(el, id) {
     setTopic(isQuiz ? `Taking the quiz for ${m.title}` : `Studying ${title} in ${m.title}`);
   }
 
-  const paint = () => { (view ? reader : hub)(); if (!view) setTopic(''); };
+  const paint = () => reader();
   const top = () => { scrollTo(0, 0); el.querySelector('h1')?.focus({ preventScroll: true }); };
 
   function open(itemId, push) {
@@ -225,15 +244,7 @@ export function renderModule(el, id) {
     if (push && !view.pushed) { history.pushState({ chemlabReader: 1 }, ''); view.pushed = true; }
     paint(); top();
   }
-  function leave() { // back to the hub; uses history so the browser Back button stays in step
-    if (view?.pushed) history.back();
-    else { view = null; paint(); top(); }
-  }
-
-  // Browser Back from a lesson returns to the hub instead of leaving the module.
-  const onPop = () => { if (view && location.hash.startsWith(`#/module/${m.id}`)) { view = null; paint(); top(); } };
-  if (window.__chemlabModPop) removeEventListener('popstate', window.__chemlabModPop);
-  window.__chemlabModPop = onPop; addEventListener('popstate', onPop);
+  function leave() { location.hash = '#/'; }
 
   /* One handler for the whole page; assigned (not added) so re-rendering never stacks listeners. */
   el.onclick = (e) => {
@@ -271,7 +282,7 @@ export function renderModule(el, id) {
     }
   };
 
-  paint();
+  open(target, false);
 }
 
 export function renderNotFound(el) {

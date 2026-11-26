@@ -130,8 +130,9 @@ function atombuilder(h) {
     $(h, '[data-op]').textContent = p; $(h, '[data-on]').textContent = n; $(h, '[data-oe]').textContent = e;
     let svg = `<circle cx="110" cy="110" r="${14 + Math.min(10, p / 8)}" fill="var(--mod)"/><text x="110" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="var(--brand-ink)">${A}</text>`;
     sh.forEach((cnt, i) => {
-      const r = 34 + i * 20;
-      svg += `<circle cx="110" cy="110" r="${r}" fill="none" stroke="var(--line)" stroke-width="1.2"/>`;
+      // Scale shells to the viewBox so heavy atoms never clip at the edges.
+      const r = sh.length === 1 ? 52 : 34 + (i * 58) / (sh.length - 1);
+      svg += `<circle cx="110" cy="110" r="${r.toFixed(1)}" fill="none" stroke="var(--line)" stroke-width="1.2"/>`;
       for (let k = 0; k < cnt; k++) { const a = -Math.PI / 2 + (2 * Math.PI * k) / cnt; svg += `<circle cx="${(110 + r * Math.cos(a)).toFixed(1)}" cy="${(110 + r * Math.sin(a)).toFixed(1)}" r="3" fill="var(--accent)"/>`; }
     });
     $(h, 'svg').innerHTML = svg;

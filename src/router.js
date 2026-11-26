@@ -11,7 +11,9 @@ const LEGAL_PAGES = ['privacy', 'terms', 'cookies', 'accessibility', 'credits', 
 export function startRouter(outlet) {
   function route() {
     const path = location.hash.replace(/^#\/?/, '');
-    const [head, arg] = path.split('/');
+    const [head, rawArg] = path.split('/');
+    const [arg, query = ''] = (rawArg || '').split('?');
+    const item = new URLSearchParams(query).get('item');
 
     if (path === '' || HOME_SECTIONS.includes(head)) {
       renderHome(outlet);
@@ -25,8 +27,10 @@ export function startRouter(outlet) {
     } else if (head === 'confirm-delete') {
       renderConfirmDelete(outlet);
       scrollTo(0, 0);
+    } else if (head === 'quiz' && arg) {
+      renderModule(outlet, arg, 'quiz');
     } else if (head === 'module' && arg) {
-      renderModule(outlet, arg);
+      renderModule(outlet, arg, item);
       scrollTo(0, 0);
     } else {
       renderNotFound(outlet);

@@ -7,6 +7,8 @@ import { parseFormula, molarMass } from '../src/lib/chemistry/molarMass.js';
 import { density, percentError, temperature } from '../src/lib/chemistry/measure.js';
 import { moleConvert, AVOGADRO } from '../src/lib/chemistry/mole.js';
 import { spillOutcome, molarity, heatFlow, equilibriumShift, cellPotential, faraday } from '../src/lib/chemistry/simulations.js';
+import { MODULES, totalItems } from '../src/data/modules.js';
+import { CONTENT } from '../src/data/content.js';
 
 const near = (a, b, t = 1e-9) => assert.ok(Math.abs(a - b) <= t * Math.max(1, Math.abs(b)), `${a} != ${b}`);
 
@@ -73,4 +75,12 @@ near(cellPotential(0.34, -0.76, 1).standard, 1.1);
 near(cellPotential(0.34, -0.76, 0.1).potential, 1.0704, 1e-3);
 near(faraday(2, 600, 63.5).grams, 0.3954, 1e-3);
 near(faraday(2, 600, 63.5).gasLitres, 0.1524, 1e-3);
+
+// Expanded curriculum contracts for Modules 3 and 4.
+assert.equal(MODULES.length, 4);
+assert.equal(MODULES.reduce((n, m) => n + totalItems(m), 0), 60);
+assert.equal(CONTENT['thermo-equilibrium'].lessons.length, 5);
+assert.equal(CONTENT['electrochemistry'].lessons.length, 6);
+assert.ok(CONTENT['thermo-equilibrium'].quiz.length >= 6);
+assert.ok(CONTENT['electrochemistry'].quiz.length >= 6);
 console.log('all chemistry tests passed');
