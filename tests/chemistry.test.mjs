@@ -6,6 +6,7 @@ import { factor, convert } from '../src/lib/chemistry/units.js';
 import { parseFormula, molarMass } from '../src/lib/chemistry/molarMass.js';
 import { density, percentError, temperature } from '../src/lib/chemistry/measure.js';
 import { moleConvert, AVOGADRO } from '../src/lib/chemistry/mole.js';
+import { spillOutcome, molarity, heatFlow, equilibriumShift, cellPotential, faraday } from '../src/lib/chemistry/simulations.js';
 
 const near = (a, b, t = 1e-9) => assert.ok(Math.abs(a - b) <= t * Math.max(1, Math.abs(b)), `${a} != ${b}`);
 
@@ -59,4 +60,17 @@ near(moleConvert(AVOGADRO, 'p', 18.015).mol, 1);
 assert.equal(moleConvert(-1, 'g', 18), null);
 assert.equal(moleConvert(1, 'x', 18), null);
 assert.equal(moleConvert(1, 'g', 0), null);
+// simulation maths
+assert.equal(spillOutcome('acid', 'rinse').safe, true);
+assert.equal(spillOutcome('solvent', 'absorb').safe, true);
+assert.equal(spillOutcome('acid', 'absorb').safe, false);
+near(molarity(5.85, 58.44, 250).litres, 0.25);
+near(molarity(5.85, 58.44, 250).concentration, 0.4004, 1e-3);
+near(heatFlow(100, 4.18, 20), 8360);
+assert.equal(equilibriumShift('reactant').dir, 'right');
+assert.equal(equilibriumShift('product').q, 'Q > K');
+near(cellPotential(0.34, -0.76, 1).standard, 1.1);
+near(cellPotential(0.34, -0.76, 0.1).potential, 1.0704, 1e-3);
+near(faraday(2, 600, 63.5).grams, 0.3954, 1e-3);
+near(faraday(2, 600, 63.5).gasLitres, 0.1524, 1e-3);
 console.log('all chemistry tests passed');

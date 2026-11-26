@@ -21,7 +21,7 @@ export function getContext() {
 
 export function describeContext(ctx = getContext()) {
   const m = MODULES.find((x) => x.id === ctx.module);
-  if (m) return `Module ${m.num} · ${m.title}`;
+  if (m) return m.title;
   return ctx.module === 'periodic-table' ? 'Periodic table' : 'ChemLab home';
 }
 

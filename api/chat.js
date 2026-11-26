@@ -64,10 +64,6 @@ function activeProviders() {
 const MODULES = {
   'intro-lab-safety': ['Module 1', 'Introduction to Chemistry & Lab Safety', 'why engineers need chemistry, lab conduct and housekeeping, glassware and equipment, handling and storing chemicals, personal protective equipment (PPE), waste disposal, first aid and spill response'],
   'basic-concepts': ['Module 2', 'Basic Chemical Concepts', 'classification of matter and mixtures, states and properties of matter, physical and chemical changes, SI units and prefixes, significant figures and scientific notation, precision and accuracy, dimensional analysis (factor-label method), Avogadro\'s number, the mole and molar mass'],
-  'atomic-periodicity': ['Module 3', 'Atomic Structure & Periodicity', 'protons, neutrons and electrons, isotopes, electron configurations, orbitals and quantum numbers, the periodic table, and periodic trends (atomic radius, ionization energy, electron affinity, electronegativity)'],
-  'bonding-molecular': ['Module 4', 'Bonding & Molecular Structure', 'ionic and covalent bonds, Lewis structures, formal charge, resonance, VSEPR shapes and bond angles, and molecular polarity'],
-  'stoichiometry-reactions': ['Module 5', 'Stoichiometry & Chemical Reactions', 'writing and balancing equations, types of reactions, mole ratios, limiting reagent, percent yield, and solution concentration'],
-  'states-gas-laws': ['Module 6', 'States of Matter & Gas Laws', 'solids, liquids and gases, kinetic molecular theory, pressure, Boyle\'s, Charles\'s and Gay-Lussac\'s laws, the combined gas law, the ideal gas law and intermolecular forces'],
   'thermo-equilibrium': ['Module 7', 'Thermochemistry & Equilibrium', 'energy and enthalpy, calorimetry, Hess\'s law, chemical equilibrium, the equilibrium constant and Le Chatelier\'s principle'],
   'electrochemistry': ['Module 8', 'Electrochemistry', 'oxidation numbers, redox reactions and half-reactions, galvanic and electrolytic cells, standard cell potentials, the Nernst equation and batteries'],
 };
